@@ -14,42 +14,36 @@ const categories = [
     title: "Maternity",
     description: "Celebrate the journey of motherhood",
     image: maternityImg,
-    featured: true,
   },
   {
     id: "newborn",
     title: "Newborn",
     description: "Capture those precious first moments",
     image: newbornImg,
-    featured: true,
   },
   {
     id: "family",
     title: "Family",
     description: "Preserve your family's unique bond",
     image: familyImg,
-    featured: false,
   },
   {
     id: "professional",
     title: "Professional",
     description: "Elevate your professional presence",
     image: professionalImg,
-    featured: false,
   },
   {
     id: "birthday",
     title: "Birthdays",
     description: "Mark every milestone celebration",
     image: birthdayImg,
-    featured: false,
   },
   {
     id: "holiday",
     title: "Holidays",
     description: "Create festive family memories",
     image: holidayImg,
-    featured: false,
   },
 ];
 
@@ -83,12 +77,10 @@ export function CategoriesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className={`group relative overflow-hidden rounded-2xl ${
-                category.featured ? "md:row-span-2" : ""
-              }`}
+              className="group relative overflow-hidden rounded-2xl"
             >
               <Link to={`/gallery?category=${category.id}`} className="block">
-                <div className={`relative overflow-hidden ${category.featured ? "aspect-[3/4]" : "aspect-[4/3]"}`}>
+                <div className="relative overflow-hidden aspect-[4/3]">
                   <img
                     src={category.image}
                     alt={category.title}
