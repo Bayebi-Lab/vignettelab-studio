@@ -35,9 +35,12 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand Column */}
           <div className="lg:col-span-1">
-            <Link to="/" className="inline-block mb-4">
+            <Link to="/" className="inline-flex items-baseline gap-2 mb-4">
               <span className="font-serif text-2xl font-semibold text-foreground">
                 Vignette<span className="text-primary">Lab</span>
+              </span>
+              <span className="font-sans text-xs font-normal text-muted-foreground tracking-wider -translate-y-0.5">
+                STUDIO
               </span>
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">

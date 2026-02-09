@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Check, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const plans = [
   {
@@ -128,8 +129,11 @@ const Pricing = () => {
                   variant={plan.popular ? "warm" : "hero"}
                   size="lg"
                   className={`w-full ${plan.popular ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90" : ""}`}
+                  asChild
                 >
-                  Choose {plan.name}
+                  <Link to={`/checkout?package=${plan.name.toLowerCase()}`}>
+                    Choose {plan.name}
+                  </Link>
                 </Button>
               </motion.div>
             ))}

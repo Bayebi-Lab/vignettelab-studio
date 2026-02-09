@@ -22,9 +22,12 @@ export function Header() {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-baseline gap-2">
             <span className="font-serif text-xl lg:text-2xl font-semibold text-foreground">
               Vignette<span className="text-primary">Lab</span>
+            </span>
+            <span className="font-sans text-xs lg:text-sm font-normal text-muted-foreground tracking-wider -translate-y-0.5">
+              STUDIO
             </span>
           </Link>
 
