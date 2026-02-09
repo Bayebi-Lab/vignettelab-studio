@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Layout } from '@/components/layout/Layout';
@@ -7,7 +6,11 @@ import { CheckCircle, Mail } from 'lucide-react';
 
 export default function CheckoutSuccess() {
   const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get('session_id');
+  const orderId = searchParams.get('order_id');
+  const sessionId = searchParams.get('session_id'); // Legacy support
+
+  // Determine which identifier to use for order status
+  const orderIdentifier = orderId || sessionId;
 
   return (
     <Layout>
@@ -33,6 +36,13 @@ export default function CheckoutSuccess() {
               portraits shortly.
             </p>
 
+            {orderId && (
+              <div className="bg-cream rounded-lg p-4 mb-6">
+                <p className="text-sm text-muted-foreground">Order ID</p>
+                <p className="font-mono text-sm font-semibold">{orderId}</p>
+              </div>
+            )}
+
             <div className="bg-cream rounded-lg p-6 mb-8">
               <div className="flex items-center justify-center gap-2 text-muted-foreground mb-2">
                 <Mail size={16} />
@@ -48,11 +58,21 @@ export default function CheckoutSuccess() {
               <Button asChild variant="outline">
                 <Link to="/">Back to Home</Link>
               </Button>
-              <Button asChild>
-                <Link to={`/order-status${sessionId ? `?session_id=${sessionId}` : ''}`}>
-                  View Order Status
-                </Link>
-              </Button>
+              {orderIdentifier && (
+                <Button asChild>
+                  <Link
+                    to={`/order-status${
+                      orderId
+                        ? `?order_id=${orderId}`
+                        : sessionId
+                        ? `?session_id=${sessionId}`
+                        : ''
+                    }`}
+                  >
+                    View Order Status
+                  </Link>
+                </Button>
+              )}
             </div>
           </motion.div>
         </div>

@@ -128,7 +128,7 @@ https://your-vercel-domain.vercel.app/api/webhooks/stripe
 
 1. **Customer Flow:**
    - Go to `/pricing` and select a package
-   - Upload 5-10 images
+   - Upload 1-3 images (max 10MB each)
    - Complete checkout with Stripe test card: `4242 4242 4242 4242`
    - Check email for order confirmation
 

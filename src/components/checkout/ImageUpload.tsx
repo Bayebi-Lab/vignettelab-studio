@@ -2,47 +2,105 @@ import { useState, useCallback } from 'react';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 interface ImageUploadProps {
   images: File[];
   onImagesChange: (images: File[]) => void;
   maxImages?: number;
   minImages?: number;
+  maxFileSizeMB?: number;
 }
+
+const MAX_FILE_SIZE_MB = 10; // 10MB per image
 
 export function ImageUpload({
   images,
   onImagesChange,
-  maxImages = 10,
-  minImages = 5,
+  maxImages = 3,
+  minImages = 1,
+  maxFileSizeMB = MAX_FILE_SIZE_MB,
 }: ImageUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
+  const [fileError, setFileError] = useState<string | null>(null);
+
+  const validateFile = (file: File): string | null => {
+    if (!file.type.startsWith('image/')) {
+      return `${file.name} is not an image file`;
+    }
+    if (file.size > maxFileSizeMB * 1024 * 1024) {
+      return `${file.name} is too large (max ${maxFileSizeMB}MB per image)`;
+    }
+    return null;
+  };
 
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       setIsDragging(false);
+      setFileError(null);
 
-      const files = Array.from(e.dataTransfer.files).filter((file) =>
-        file.type.startsWith('image/')
-      );
+      const files = Array.from(e.dataTransfer.files);
+      const validFiles: File[] = [];
+      const errors: string[] = [];
 
-      const newImages = [...images, ...files].slice(0, maxImages);
-      onImagesChange(newImages);
+      files.forEach((file) => {
+        const error = validateFile(file);
+        if (error) {
+          errors.push(error);
+        } else {
+          validFiles.push(file);
+        }
+      });
+
+      if (errors.length > 0) {
+        const errorMessage = errors.join(', ');
+        setFileError(errorMessage);
+        toast.error(errorMessage);
+      }
+
+      if (validFiles.length > 0) {
+        const newImages = [...images, ...validFiles].slice(0, maxImages);
+        onImagesChange(newImages);
+        if (validFiles.length < files.length) {
+          toast.warning(`Only ${validFiles.length} of ${files.length} files were added`);
+        }
+      }
     },
-    [images, maxImages, onImagesChange]
+    [images, maxImages, maxFileSizeMB, onImagesChange]
   );
 
   const handleFileInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files || []).filter((file) =>
-        file.type.startsWith('image/')
-      );
+      setFileError(null);
+      const files = Array.from(e.target.files || []);
+      const validFiles: File[] = [];
+      const errors: string[] = [];
 
-      const newImages = [...images, ...files].slice(0, maxImages);
-      onImagesChange(newImages);
+      files.forEach((file) => {
+        const error = validateFile(file);
+        if (error) {
+          errors.push(error);
+        } else {
+          validFiles.push(file);
+        }
+      });
+
+      if (errors.length > 0) {
+        const errorMessage = errors.join(', ');
+        setFileError(errorMessage);
+        toast.error(errorMessage);
+      }
+
+      if (validFiles.length > 0) {
+        const newImages = [...images, ...validFiles].slice(0, maxImages);
+        onImagesChange(newImages);
+        if (validFiles.length < files.length) {
+          toast.warning(`Only ${validFiles.length} of ${files.length} files were added`);
+        }
+      }
     },
-    [images, maxImages, onImagesChange]
+    [images, maxImages, maxFileSizeMB, onImagesChange]
   );
 
   const removeImage = useCallback(
@@ -102,7 +160,7 @@ export function ImageUpload({
                 : 'Drag & drop images here, or click to select'}
             </p>
             <p className="text-xs text-muted-foreground">
-              Upload {minImages}-{maxImages} images (JPG, PNG, WEBP)
+              Upload {minImages}-{maxImages} images (JPG, PNG, WEBP, max {maxFileSizeMB}MB each)
             </p>
           </div>
           {images.length < maxImages && (
@@ -112,6 +170,12 @@ export function ImageUpload({
           )}
         </label>
       </div>
+
+      {fileError && (
+        <div className="bg-destructive/10 text-destructive p-3 rounded-lg text-sm">
+          {fileError}
+        </div>
+      )}
 
       {images.length > 0 && (
         <div className="space-y-2">
@@ -138,7 +202,7 @@ export function ImageUpload({
                   <X size={16} />
                 </button>
                 <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-1 truncate">
-                  {image.name}
+                  {image.name} ({(image.size / 1024 / 1024).toFixed(2)}MB)
                 </div>
               </div>
             ))}

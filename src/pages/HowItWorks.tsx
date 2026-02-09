@@ -1,15 +1,27 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { Upload, Wand2, Download, Sparkles, Check, ArrowRight } from "lucide-react";
+import { Package, Upload, CreditCard, Sparkles, Check, ArrowRight } from "lucide-react";
 import heroImg from "@/assets/hero-family.jpg";
 
 const steps = [
   {
-    icon: Upload,
+    icon: Package,
     number: "01",
-    title: "Upload Your Photos",
-    description: "Start by uploading 5-10 of your favorite photos. Selfies, casual snapshots, or any images where you love how you look work perfectly.",
+    title: "Pick a Package",
+    description: "Choose the perfect package for your needs. From our Starter package with 5 portraits to our Professional package with 50 portraits, we have options for everyone.",
+    tips: [
+      "Compare features and pricing",
+      "Select the package that fits your needs",
+      "All packages include high-quality AI portraits",
+    ],
+  },
+  {
+    icon: Upload,
+    number: "02",
+    title: "Upload Your Images",
+    description: "Upload your favorite photos. Selfies, casual snapshots, or any images where you love how you look work perfectly. Our AI will use these to create your portraits. Each image should be under 10MB.",
     tips: [
       "Use well-lit photos for best results",
       "Include different angles and expressions",
@@ -17,36 +29,25 @@ const steps = [
     ],
   },
   {
-    icon: Wand2,
-    number: "02",
-    title: "Choose Your Style",
-    description: "Select from our curated collection of portrait styles. Whether you want elegant maternity, adorable newborn, or professional headshots, we've got you covered.",
+    icon: CreditCard,
+    number: "03",
+    title: "Pay Securely",
+    description: "Complete your payment securely with our integrated checkout. Your payment is processed safely and you'll receive an immediate confirmation email.",
     tips: [
-      "Browse our gallery for inspiration",
-      "Mix and match styles within a package",
-      "Request custom backgrounds and settings",
+      "Secure payment processing",
+      "Instant order confirmation",
+      "Multiple payment methods accepted",
     ],
   },
   {
     icon: Sparkles,
-    number: "03",
-    title: "AI Enhancement",
-    description: "Our advanced AI goes to work, analyzing your photos and creating stunning studio-quality portraits with perfect lighting, composition, and artistic flair.",
+    number: "04",
+    title: "AI Processing & Delivery",
+    description: "Our advanced AI goes to work, analyzing your photos and creating stunning studio-quality portraits. You'll receive your portraits via email within 24 hours (or faster with premium packages).",
     tips: [
       "Processing takes 15-30 minutes",
       "AI preserves your unique features",
-      "Multiple variations generated for you to choose",
-    ],
-  },
-  {
-    icon: Download,
-    number: "04",
-    title: "Download & Enjoy",
-    description: "Review your beautiful portraits and download them in high resolution. Print them, frame them, share them—they're yours forever.",
-    tips: [
-      "High-resolution files included",
-      "Print-ready formats available",
-      "Unlimited revisions in premium plans",
+      "Download links sent to your email",
     ],
   },
 ];
@@ -79,11 +80,13 @@ const HowItWorks = () => {
               How VignetteLab Works
             </h1>
             <p className="text-muted-foreground text-lg mb-8">
-              Creating beautiful portraits has never been easier. Follow our simple four-step process to transform your everyday photos into stunning works of art.
+              Creating beautiful portraits has never been easier. Pick your package, upload your photos, pay securely, and let our AI create stunning portraits for you.
             </p>
-            <Button variant="hero" size="xl" className="group">
-              Start Your Session
-              <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
+            <Button variant="hero" size="xl" className="group" asChild>
+              <Link to="/pricing">
+                Start Your Session
+                <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
+              </Link>
             </Button>
           </motion.div>
         </div>
@@ -165,8 +168,11 @@ const HowItWorks = () => {
               variant="warm" 
               size="xl" 
               className="bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+              asChild
             >
-              Get Started Now
+              <Link to="/pricing">
+                Get Started Now
+              </Link>
             </Button>
           </motion.div>
         </div>

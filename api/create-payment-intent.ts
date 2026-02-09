@@ -1,8 +1,4 @@
 import Stripe from 'stripe';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.VITE_SUPABASE_URL!;
-const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY!;
 
 // Lazy initialization to ensure env vars are loaded
 let stripeInstance: Stripe | null = null;
@@ -66,50 +62,47 @@ export default async function handler(req: Request) {
       );
     }
 
-    const appUrl =
-      process.env.VITE_APP_URL ||
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:8080');
-
-    // Create Stripe Checkout Session
-    const stripe = getStripe();
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
+    // Validate price
+    const priceAmount = typeof price === 'number' ? price : parseFloat(price);
+    if (isNaN(priceAmount) || priceAmount <= 0) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid price' }),
         {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `${package_name} Package`,
-              description: `AI-generated portrait package`,
-            },
-            unit_amount: Math.round(price * 100), // Convert to cents
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      customer_email,
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // Create Stripe Payment Intent
+    const stripe = getStripe();
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(priceAmount * 100), // Convert to cents
+      currency: 'usd',
       metadata: {
         package_id,
         package_name,
+        customer_email,
         image_urls: JSON.stringify(image_urls),
       },
-      success_url: `${appUrl}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/checkout-cancel`,
+      receipt_email: customer_email,
     });
 
     return new Response(
-      JSON.stringify({ url: session.url }),
+      JSON.stringify({
+        client_secret: paymentIntent.client_secret,
+        payment_intent_id: paymentIntent.id,
+      }),
       {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       }
     );
   } catch (error) {
-    console.error('Error creating checkout session:', error);
+    console.error('Error creating payment intent:', error);
     return new Response(
       JSON.stringify({
-        error: 'Failed to create checkout session',
+        error: 'Failed to create payment intent',
         message: error instanceof Error ? error.message : 'Unknown error',
       }),
       {

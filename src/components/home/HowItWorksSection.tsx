@@ -1,24 +1,24 @@
 import { motion } from "framer-motion";
-import { Upload, Wand2, Download } from "lucide-react";
+import { Package, Upload, CreditCard } from "lucide-react";
 
 const steps = [
   {
-    icon: Upload,
+    icon: Package,
     number: "01",
-    title: "Upload Your Photos",
-    description: "Simply upload your favorite selfies or casual photos. No studio visit required.",
+    title: "Pick a Package",
+    description: "Choose the perfect package for your needs. From Starter to Professional, we have options for everyone.",
   },
   {
-    icon: Wand2,
+    icon: Upload,
     number: "02",
-    title: "AI Magic Happens",
-    description: "Our AI transforms your photos into stunning studio-quality portraits with perfect lighting.",
+    title: "Upload Your Images",
+    description: "Upload 1-3 of your favorite photos (max 10MB each). Our AI will use these to create your stunning portraits.",
   },
   {
-    icon: Download,
+    icon: CreditCard,
     number: "03",
-    title: "Download & Share",
-    description: "Receive your beautiful portraits ready to print, frame, or share with loved ones.",
+    title: "Pay",
+    description: "Complete your payment securely. Your portraits will be processed and delivered via email within 24 hours.",
   },
 ];
 
@@ -40,7 +40,7 @@ export function HowItWorksSection() {
             How It Works
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Get stunning portraits in three simple steps. No appointments, no hassle.
+            Get stunning portraits in three simple steps: pick a package, upload your images, and pay. No appointments, no hassle.
           </p>
         </motion.div>
 

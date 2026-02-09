@@ -15,7 +15,7 @@ const faqs = [
     questions: [
       {
         q: "How does VignetteLab work?",
-        a: "VignetteLab uses advanced AI technology to transform your everyday photos into stunning studio-quality portraits. Simply upload 5-10 photos, choose your preferred style, and our AI creates beautiful portraits with professional lighting and composition.",
+        a: "VignetteLab uses advanced AI technology to transform your everyday photos into stunning studio-quality portraits. Simply upload 1-3 photos (max 10MB each), choose your preferred style, and our AI creates beautiful portraits with professional lighting and composition.",
       },
       {
         q: "What kind of photos should I upload?",
