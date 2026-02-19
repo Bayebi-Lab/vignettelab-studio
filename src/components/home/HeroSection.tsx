@@ -28,7 +28,7 @@ export function HeroSection() {
           >
             <div className="flex items-center gap-2 px-4 py-2 bg-primary-foreground/10 backdrop-blur-sm rounded-full border border-primary-foreground/20">
               <Sparkles size={16} className="text-rose-gold-light" />
-              <span className="text-sm text-primary-foreground font-medium">AI-Powered Portrait Studio</span>
+              <span className="text-sm text-primary-foreground font-medium">AI Maternity Photography Studio</span>
             </div>
           </motion.div>
 
@@ -38,9 +38,8 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="font-serif text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-primary-foreground leading-tight mb-6"
           >
-            Preserve Your Most{" "}
-            <span className="italic text-rose-gold-light">Precious</span>{" "}
-            Moments
+            Beautiful Bump Photos{" "}
+            <span className="italic text-rose-gold-light">Without Leaving Home</span>
           </motion.h1>
 
           <motion.p
@@ -49,8 +48,8 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl text-primary-foreground/80 leading-relaxed mb-8 max-w-xl"
           >
-            Transform your selfies into stunning studio-quality portraits. 
-            From maternity to milestones, we bring your most meaningful memories to life.
+            Transform your pregnancy photos into stunning studio-quality maternity portraits. 
+            Capture your pregnancy glow effortlessly from the comfort of your home.
           </motion.p>
 
           <motion.div
@@ -59,12 +58,14 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="flex flex-wrap gap-4"
           >
-            <Button variant="hero" size="xl" className="group">
-              Start Your Session
-              <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
+            <Button variant="hero" size="xl" className="group" asChild>
+              <a href="/shop">
+                Shop Now
+                <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
+              </a>
             </Button>
-            <Button variant="heroOutline" size="xl">
-              View Gallery
+            <Button variant="heroOutline" size="xl" asChild>
+              <a href="/shop">View Products</a>
             </Button>
           </motion.div>
 
@@ -76,7 +77,7 @@ export function HeroSection() {
           >
             <div className="text-center">
               <p className="font-serif text-3xl text-primary-foreground font-medium">50K+</p>
-              <p className="text-sm text-primary-foreground/60">Happy Families</p>
+              <p className="text-sm text-primary-foreground/60">Expecting Mothers</p>
             </div>
             <div className="w-px h-12 bg-primary-foreground/20" />
             <div className="text-center">
@@ -86,7 +87,7 @@ export function HeroSection() {
             <div className="w-px h-12 bg-primary-foreground/20" />
             <div className="text-center">
               <p className="font-serif text-3xl text-primary-foreground font-medium">1M+</p>
-              <p className="text-sm text-primary-foreground/60">Portraits Created</p>
+              <p className="text-sm text-primary-foreground/60">Maternity Portraits Created</p>
             </div>
           </motion.div>
         </div>

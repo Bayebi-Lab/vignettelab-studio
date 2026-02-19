@@ -15,15 +15,15 @@ const faqs = [
     questions: [
       {
         q: "How does VignetteLab work?",
-        a: "VignetteLab uses advanced AI technology to transform your everyday photos into stunning studio-quality portraits. Simply upload 1-3 photos (max 10MB each), choose your preferred style, and our AI creates beautiful portraits with professional lighting and composition.",
+        a: "VignetteLab uses advanced AI technology to transform your pregnancy photos into stunning studio-quality maternity portraits. Simply upload 1-3 photos showing your beautiful bump (max 10MB each), choose your preferred style, and our AI creates beautiful maternity portraits with professional lighting and composition.",
       },
       {
         q: "What kind of photos should I upload?",
-        a: "Upload clear, well-lit photos where your face is visible. Selfies, casual snapshots, and any images where you like how you look work great. We recommend including different angles and expressions for the best results.",
+        a: "Upload photos showing your beautiful bump. Clear, well-lit photos where your face and bump are visible work best. Selfies, casual snapshots, and any images where you love how you look work great. We recommend including different angles to showcase your pregnancy glow.",
       },
       {
         q: "How long does it take to receive my portraits?",
-        a: "Standard delivery is 24 hours. Family package members receive priority 12-hour delivery, while Professional package members get express 6-hour delivery. Most orders are completed even faster!",
+        a: "Standard delivery is 24 hours. Glow Package members receive priority 12-hour delivery, while Complete Collection members get express 6-hour delivery. Most orders are completed even faster!",
       },
     ],
   },
@@ -36,11 +36,11 @@ const faqs = [
       },
       {
         q: "What if I'm not happy with the results?",
-        a: "We want you to love your portraits. If you're not satisfied, we offer revision rounds based on your package. Professional package members enjoy unlimited revisions until you're completely happy.",
+        a: "We want you to love your maternity portraits. If you're not satisfied, we offer revision rounds based on your product. Complete Collection members enjoy unlimited revisions until you're completely happy.",
       },
       {
         q: "What resolution are the final images?",
-        a: "Resolution depends on your package. Starter receives standard resolution suitable for digital sharing, Family package includes high resolution for quality prints up to 8x10, and Professional package delivers ultra-high resolution for large prints and professional use.",
+        a: "Resolution depends on your product. Essential Glow receives standard resolution suitable for digital sharing, Glow Package includes high resolution for quality prints up to 8x10, and Complete Collection delivers ultra-high resolution for large prints and professional use.",
       },
     ],
   },
@@ -65,8 +65,20 @@ const faqs = [
     category: "Pricing & Plans",
     questions: [
       {
+        q: "What trimester is best for maternity photos?",
+        a: "The best time for maternity photos is typically between 28-36 weeks, when your bump is beautifully visible but you're still comfortable. However, you can capture beautiful photos at any stage of your pregnancy journey.",
+      },
+      {
+        q: "Can I include my partner or other children?",
+        a: "Currently, our AI focuses on individual maternity portraits. However, you can order separate sessions for family photos. We're working on adding family maternity options soon!",
+      },
+      {
+        q: "How do I pose for the best bump photos?",
+        a: "The best poses showcase your bump naturally. Try side profiles, hands on your bump, or standing poses. Our AI works with any pose you're comfortable with - just upload photos where you love how you look!",
+      },
+      {
         q: "Can I upgrade my package?",
-        a: "Yes! You can upgrade to a higher package at any time. Just pay the difference and enjoy the additional features and portraits.",
+        a: "Yes! You can upgrade to a higher product at any time. Just pay the difference and enjoy the additional features and portraits.",
       },
       {
         q: "Do you offer refunds?",
@@ -96,7 +108,7 @@ const FAQ = () => {
               Frequently Asked Questions
             </h1>
             <p className="text-muted-foreground text-lg">
-              Everything you need to know about VignetteLab. Can't find what you're looking for? Reach out to our support team.
+              Everything you need to know about VignetteLab maternity photography. Can't find what you're looking for? Reach out to our support team.
             </p>
           </motion.div>
         </div>

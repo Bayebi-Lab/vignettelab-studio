@@ -6,13 +6,13 @@ const steps = [
     icon: Package,
     number: "01",
     title: "Pick a Package",
-    description: "Choose the perfect package for your needs. From Starter to Professional, we have options for everyone.",
+    description: "Choose the perfect product for your needs. We have options for every expecting mother.",
   },
   {
     icon: Upload,
     number: "02",
     title: "Upload Your Images",
-    description: "Upload 1-3 of your favorite photos (max 10MB each). Our AI will use these to create your stunning portraits.",
+    description: "Upload 1-3 photos showing your beautiful bump (max 10MB each). Selfies, casual snapshots, or any images where you love how you look work perfectly.",
   },
   {
     icon: CreditCard,
@@ -40,7 +40,7 @@ export function HowItWorksSection() {
             How It Works
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Get stunning portraits in three simple steps: pick a package, upload your images, and pay. No appointments, no hassle.
+            Get stunning maternity portraits in three simple steps: pick a product, upload your bump photos, and pay. No appointments, no hassle.
           </p>
         </motion.div>
 

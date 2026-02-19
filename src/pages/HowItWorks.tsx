@@ -2,30 +2,30 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { Package, Upload, CreditCard, Sparkles, Check, ArrowRight } from "lucide-react";
+import { ShoppingBag, Upload, CreditCard, Sparkles, Check, ArrowRight } from "lucide-react";
 import heroImg from "@/assets/hero-family.jpg";
 
 const steps = [
   {
-    icon: Package,
+    icon: ShoppingBag,
     number: "01",
-    title: "Pick a Package",
-    description: "Choose the perfect package for your needs. From our Starter package with 5 portraits to our Professional package with 50 portraits, we have options for everyone.",
+    title: "Pick a Product",
+    description: "Choose the perfect maternity portrait product for your needs. From our Essential Glow with 5 portraits to our Complete Collection with 50 portraits, we have options for every expecting mother.",
     tips: [
       "Compare features and pricing",
-      "Select the package that fits your needs",
-      "All packages include high-quality AI portraits",
+      "Select the product that fits your needs",
+      "All products include high-quality AI maternity portraits",
     ],
   },
   {
     icon: Upload,
     number: "02",
     title: "Upload Your Images",
-    description: "Upload your favorite photos. Selfies, casual snapshots, or any images where you love how you look work perfectly. Our AI will use these to create your portraits. Each image should be under 10MB.",
+    description: "Upload photos showing your beautiful bump. Selfies, casual snapshots, or any images where you love how you look work perfectly. Our AI will use these to create your maternity portraits. Each image should be under 10MB.",
     tips: [
-      "Use well-lit photos for best results",
-      "Include different angles and expressions",
-      "Both close-ups and full-body shots work great",
+      "Showcase your bump prominently",
+      "Use well-lit photos to capture your glow",
+      "Include different angles - both close-ups and full-body shots work great",
     ],
   },
   {
@@ -43,10 +43,10 @@ const steps = [
     icon: Sparkles,
     number: "04",
     title: "AI Processing & Delivery",
-    description: "Our advanced AI goes to work, analyzing your photos and creating stunning studio-quality portraits. You'll receive your portraits via email within 24 hours (or faster with premium packages).",
+    description: "Our advanced AI goes to work, analyzing your photos and creating stunning studio-quality maternity portraits. You'll receive your bump photos via email within 24 hours (or faster with premium products).",
     tips: [
       "Processing takes 15-30 minutes",
-      "AI preserves your unique features",
+      "AI preserves your unique features and pregnancy glow",
       "Download links sent to your email",
     ],
   },
@@ -77,13 +77,13 @@ const HowItWorks = () => {
               The Process
             </span>
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
-              How VignetteLab Works
+              How VignetteLab Works for Maternity Photos
             </h1>
             <p className="text-muted-foreground text-lg mb-8">
-              Creating beautiful portraits has never been easier. Pick your package, upload your photos, pay securely, and let our AI create stunning portraits for you.
+              Creating beautiful maternity portraits has never been easier. Pick your product, upload your bump photos, pay securely, and let our AI capture your pregnancy glow.
             </p>
             <Button variant="hero" size="xl" className="group" asChild>
-              <Link to="/pricing">
+              <Link to="/shop">
                 Start Your Session
                 <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
               </Link>
@@ -159,10 +159,10 @@ const HowItWorks = () => {
             transition={{ duration: 0.6 }}
           >
             <h2 className="font-serif text-3xl md:text-4xl text-primary-foreground mb-6">
-              Ready to Create Your Portraits?
+              Ready to Capture Your Pregnancy Glow?
             </h2>
             <p className="text-primary-foreground/80 text-lg mb-8 max-w-xl mx-auto">
-              Start your journey today and see the magic for yourself.
+              Start your maternity photography journey today and see the magic for yourself.
             </p>
             <Button 
               variant="warm" 
@@ -170,7 +170,7 @@ const HowItWorks = () => {
               className="bg-primary-foreground text-primary hover:bg-primary-foreground/90"
               asChild
             >
-              <Link to="/pricing">
+              <Link to="/shop">
                 Get Started Now
               </Link>
             </Button>

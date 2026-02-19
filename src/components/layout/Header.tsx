@@ -7,9 +7,8 @@ import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/", label: "Home" },
-  { href: "/gallery", label: "Gallery" },
+  { href: "/shop", label: "Shop" },
   { href: "/how-it-works", label: "How It Works" },
-  { href: "/pricing", label: "Pricing" },
   { href: "/faq", label: "FAQ" },
 ];
 
@@ -51,8 +50,8 @@ export function Header() {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-4">
-            <Button variant="hero" size="lg">
-              Get Started
+            <Button variant="hero" size="lg" asChild>
+              <Link to="/shop">Book Your Session</Link>
             </Button>
           </div>
 
@@ -92,8 +91,8 @@ export function Header() {
                   {link.label}
                 </Link>
               ))}
-              <Button variant="hero" size="lg" className="mt-4">
-                Get Started
+              <Button variant="hero" size="lg" className="mt-4" asChild>
+                <Link to="/shop">Shop Now</Link>
               </Button>
             </nav>
           </motion.div>

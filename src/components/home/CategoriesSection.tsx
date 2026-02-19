@@ -2,48 +2,25 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import maternityImg from "@/assets/category-maternity.jpg";
-import newbornImg from "@/assets/category-newborn.jpg";
-import familyImg from "@/assets/category-family.jpg";
-import professionalImg from "@/assets/category-professional.jpg";
-import birthdayImg from "@/assets/category-birthday.jpg";
-import holidayImg from "@/assets/category-holiday.jpg";
 
 const categories = [
   {
     id: "maternity",
-    title: "Maternity",
-    description: "Celebrate the journey of motherhood",
+    title: "Classic Bump",
+    description: "Timeless maternity portraits showcasing your beautiful bump",
     image: maternityImg,
   },
   {
-    id: "newborn",
-    title: "Newborn",
-    description: "Capture those precious first moments",
-    image: newbornImg,
+    id: "maternity-glamour",
+    title: "Glamour Maternity",
+    description: "Elegant and sophisticated maternity photography",
+    image: maternityImg,
   },
   {
-    id: "family",
-    title: "Family",
-    description: "Preserve your family's unique bond",
-    image: familyImg,
-  },
-  {
-    id: "professional",
-    title: "Professional",
-    description: "Elevate your professional presence",
-    image: professionalImg,
-  },
-  {
-    id: "birthday",
-    title: "Birthdays",
-    description: "Mark every milestone celebration",
-    image: birthdayImg,
-  },
-  {
-    id: "holiday",
-    title: "Holidays",
-    description: "Create festive family memories",
-    image: holidayImg,
+    id: "maternity-intimate",
+    title: "Intimate Moments",
+    description: "Capture the quiet beauty of your pregnancy journey",
+    image: maternityImg,
   },
 ];
 
@@ -59,13 +36,13 @@ export function CategoriesSection() {
           className="text-center mb-16"
         >
           <span className="text-primary font-medium text-sm uppercase tracking-widest mb-4 block">
-            Explore Collections
+            Maternity Styles
           </span>
           <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground mb-4">
-            Portrait Categories
+            Maternity Photography Styles
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            From life's grand milestones to everyday magic, find the perfect portrait style for your story.
+            Choose the perfect style to capture your pregnancy glow. From classic to glamour, we have options for every expecting mother.
           </p>
         </motion.div>
 
@@ -79,7 +56,7 @@ export function CategoriesSection() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group relative overflow-hidden rounded-2xl"
             >
-              <Link to={`/gallery?category=${category.id}`} className="block">
+              <Link to={`/shop`} className="block">
                 <div className="relative overflow-hidden aspect-[4/3]">
                   <img
                     src={category.image}

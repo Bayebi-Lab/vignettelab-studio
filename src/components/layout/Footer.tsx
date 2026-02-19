@@ -3,16 +3,12 @@ import { Instagram, Facebook, Twitter, Mail, Heart } from "lucide-react";
 
 const footerLinks = {
   explore: [
-    { label: "Gallery", href: "/gallery" },
+    { label: "Shop", href: "/shop" },
     { label: "How It Works", href: "/how-it-works" },
-    { label: "Pricing", href: "/pricing" },
     { label: "FAQ", href: "/faq" },
   ],
   categories: [
-    { label: "Maternity", href: "/gallery?category=maternity" },
-    { label: "Newborn", href: "/gallery?category=newborn" },
-    { label: "Family", href: "/gallery?category=family" },
-    { label: "Professional", href: "/gallery?category=professional" },
+    { label: "Maternity", href: "/shop" },
   ],
   legal: [
     { label: "Privacy Policy", href: "/privacy" },
@@ -22,7 +18,7 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Instagram, href: "#", label: "Instagram" },
+  { icon: Instagram, href: "https://www.instagram.com/vignettelabstudio", label: "Instagram" },
   { icon: Facebook, href: "#", label: "Facebook" },
   { icon: Twitter, href: "#", label: "Twitter" },
   { icon: Mail, href: "mailto:hello@vignettelab.com", label: "Email" },
@@ -44,8 +40,8 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-              Transforming everyday moments into timeless portraits. 
-              AI-powered photography that captures the heart of your story.
+              Beautiful bump photos without leaving home. 
+              AI-powered maternity photography that captures your pregnancy glow effortlessly.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social) => (
@@ -119,7 +115,7 @@ export function Footer() {
             © {new Date().getFullYear()} VignetteLab Studio. All rights reserved.
           </p>
           <p className="text-muted-foreground text-sm flex items-center gap-1">
-            Made with <Heart size={14} className="text-primary fill-primary" /> for families everywhere
+            Made with <Heart size={14} className="text-primary fill-primary" /> for expecting mothers everywhere
           </p>
         </div>
       </div>

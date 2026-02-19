@@ -4,20 +4,20 @@ import { Star, Quote } from "lucide-react";
 const testimonials = [
   {
     name: "Sarah Mitchell",
-    role: "New Mother",
-    content: "I was skeptical at first, but the newborn portraits VignetteLab created are absolutely stunning. They captured a softness and warmth I didn't think was possible from my phone photos.",
+    role: "Expecting Mother",
+    content: "I was hesitant about maternity photos, but VignetteLab captured my pregnancy glow so beautifully! The bump photos are stunning and I didn't even have to leave my house. Perfect for busy moms-to-be!",
     rating: 5,
   },
   {
-    name: "Michael Chen",
-    role: "Business Professional",
-    content: "Finally, professional headshots without the awkward studio experience. The results exceeded my expectations and I've received so many compliments on LinkedIn.",
+    name: "Jessica Martinez",
+    role: "New Mom",
+    content: "I'm so glad I captured my pregnancy journey with VignetteLab. The maternity portraits are absolutely gorgeous and I love how they preserved my glow. These photos will be treasured forever!",
     rating: 5,
   },
   {
-    name: "The Rodriguez Family",
-    role: "Family of 5",
-    content: "With three kids, getting everyone to cooperate for a photo is impossible. VignetteLab turned our chaotic snapshots into beautiful family portraits we'll treasure forever.",
+    name: "Emily Thompson",
+    role: "Expecting Mother",
+    content: "As someone who's not comfortable in front of a camera, I loved how easy it was to get beautiful maternity photos from home. The AI captured my bump perfectly and the results exceeded all my expectations!",
     rating: 5,
   },
 ];
@@ -37,10 +37,10 @@ export function TestimonialsSection() {
             Testimonials
           </span>
           <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground mb-4">
-            Loved by Families Everywhere
+            Loved by Expecting Mothers Everywhere
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Join thousands of happy customers who've transformed their memories into art.
+            Join thousands of happy expecting mothers who've captured their pregnancy glow with beautiful maternity portraits.
           </p>
         </motion.div>
 

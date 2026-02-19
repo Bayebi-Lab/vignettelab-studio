@@ -3,34 +3,30 @@ import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeftRight } from "lucide-react";
 // Using existing images as placeholders - replace with actual before/after images
-import before1 from "@/assets/category-family.jpg";
-import after1 from "@/assets/hero-family.jpg";
 import before2 from "@/assets/category-maternity.jpg";
-import after2 from "@/assets/category-newborn.jpg";
-import before3 from "@/assets/category-professional.jpg";
-import after3 from "@/assets/category-birthday.jpg";
+import after2 from "@/assets/hero-family.jpg";
 
 const transformations = [
   {
     id: 1,
-    before: before1,
-    after: after1,
-    category: "Family Portrait",
-    description: "Casual snapshot transformed into elegant studio portrait",
+    before: before2,
+    after: after2,
+    category: "Maternity Portrait",
+    description: "Everyday pregnancy photo transformed into elegant studio portrait",
   },
   {
     id: 2,
     before: before2,
     after: after2,
-    category: "Maternity Session",
-    description: "Everyday moment elevated to timeless artwork",
+    category: "Maternity Glow",
+    description: "Casual bump photo elevated to timeless artwork",
   },
   {
     id: 3,
-    before: before3,
-    after: after3,
-    category: "Professional Headshot",
-    description: "Selfie refined into polished professional portrait",
+    before: before2,
+    after: after2,
+    category: "Maternity Session",
+    description: "Simple snapshot refined into beautiful maternity portrait",
   },
 ];
 
@@ -49,10 +45,10 @@ export function TransformationSection() {
             See The Difference
           </span>
           <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground mb-4">
-            From Selfie to Studio Masterpiece
+            From Pregnancy Photo to Maternity Portrait
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Watch ordinary photos transform into extraordinary portraits with our AI-powered studio enhancement.
+            Watch everyday pregnancy photos transform into stunning maternity portraits with our AI-powered studio enhancement.
           </p>
         </motion.div>
 

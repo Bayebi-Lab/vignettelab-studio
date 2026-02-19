@@ -4,8 +4,8 @@ import { Clock, Shield, Heart, Palette, Camera, Award } from "lucide-react";
 const benefits = [
   {
     icon: Clock,
-    title: "Save Time",
-    description: "No appointments or studio visits needed. Create portraits from the comfort of your home.",
+    title: "Capture from Home",
+    description: "No appointments or studio visits needed. Capture your beautiful bump photos from the comfort of your home.",
   },
   {
     icon: Shield,
@@ -14,23 +14,23 @@ const benefits = [
   },
   {
     icon: Heart,
-    title: "Emotional Connection",
-    description: "We capture the essence of your relationships, not just appearances.",
+    title: "Capture Your Journey",
+    description: "We preserve the beautiful moments of your pregnancy journey, capturing your unique glow and beauty.",
   },
   {
     icon: Palette,
     title: "Artistic Quality",
-    description: "Professional-grade portraits with beautiful lighting and composition.",
+    description: "Professional-grade maternity portraits with beautiful lighting and composition.",
   },
   {
     icon: Camera,
     title: "Unlimited Retakes",
-    description: "Not satisfied? We'll regenerate your portraits until you love them.",
+    description: "Not satisfied? We'll regenerate your maternity portraits until you love them.",
   },
   {
     icon: Award,
     title: "Print Ready",
-    description: "High-resolution files ready for printing, framing, or digital sharing.",
+    description: "High-resolution files ready for printing, framing, or sharing with family and friends.",
   },
 ];
 
@@ -52,7 +52,7 @@ export function BenefitsSection() {
             The VignetteLab Difference
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Experience the perfect blend of cutting-edge AI technology and artistic vision.
+            Experience the perfect blend of cutting-edge AI technology and artistic vision to capture your pregnancy glow.
           </p>
         </motion.div>
 

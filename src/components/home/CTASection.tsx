@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function CTASection() {
   return (
@@ -25,13 +26,13 @@ export function CTASection() {
           </div>
 
           <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-primary-foreground mb-6">
-            Ready to Transform Your <br className="hidden md:block" />
-            <span className="italic">Precious Moments?</span>
+            Ready to Capture Your <br className="hidden md:block" />
+            <span className="italic">Pregnancy Glow?</span>
           </h2>
 
           <p className="text-primary-foreground/80 text-lg mb-10 max-w-xl mx-auto">
-            Join over 50,000 families who've discovered the joy of beautiful, 
-            studio-quality portraits without leaving home.
+            Join over 50,000 expecting mothers who've discovered the joy of beautiful, 
+            studio-quality maternity portraits without leaving home.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -39,12 +40,15 @@ export function CTASection() {
               variant="warm" 
               size="xl" 
               className="group bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+              asChild
             >
-              Create Your Portrait
-              <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
+              <Link to="/shop">
+                Shop Now
+                <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
+              </Link>
             </Button>
-            <Button variant="heroOutline" size="xl">
-              View Pricing
+            <Button variant="heroOutline" size="xl" asChild>
+              <Link to="/shop">View Products</Link>
             </Button>
           </div>
 
