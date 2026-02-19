@@ -1,0 +1,71 @@
+---
+description: How to run and manage Supabase database migrations
+globs: supabase/migrations/*.sql,scripts/*.ts,scripts/*.sh,supabase/config.toml
+alwaysApply: false
+---
+
+# Database Migration Guide
+
+This project uses **Supabase** for the database. Migrations live in `supabase/migrations/` with timestamped filenames (`YYYYMMDDHHMMSS_description.sql`).
+
+## Running Migrations
+
+### Primary method: Supabase CLI (recommended)
+
+```bash
+npm run migrate:cli
+```
+
+This script will:
+1. Ensure you're logged in (`supabase login` if needed)
+2. Link to the remote project (prompts for DB password if required)
+3. Pull any remote migrations to sync state
+4. Push local migrations with `supabase db push`
+
+**Prerequisites:**
+- [Supabase CLI](https://supabase.com/docs/guides/cli) installed
+- Logged in: `supabase login`
+- Database password from [Supabase Dashboard](https://supabase.com/dashboard) → Project → Settings → Database
+
+### Alternative: manual CLI
+
+```bash
+supabase login                    # If not already
+supabase link --project-ref <REF> --password <DB_PASSWORD>
+supabase db push                  # Apply pending migrations
+```
+
+## Repairing migration history
+
+When remote and local migration history diverge:
+
+```bash
+npm run migrate:repair
+```
+
+Or manually:
+
+```bash
+supabase migration repair --status reverted <version>   # Mark old remote as reverted
+supabase migration repair --status applied <version>    # Mark new as applied
+supabase db push
+```
+
+Check migration versions with `supabase migration list`.
+
+## Creating new migrations
+
+1. Add a SQL file: `supabase/migrations/YYYYMMDDHHMMSS_short_description.sql`
+2. Use ascending timestamps so new migrations run after existing ones
+3. Run `npm run migrate:cli` to push
+
+## Environment variables
+
+Migrations that use the CLI need nothing extra. The `scripts/run-migration.ts` path (used by `npm run migrate`) expects:
+
+- `VITE_SUPABASE_URL`
+- `SUPABASE_SECRET_KEY`
+
+in `.env`.
+
+Note: `npm run migrate` runs a legacy script that prints SQL for manual execution in the Supabase Dashboard SQL Editor. Prefer `npm run migrate:cli` for normal migration workflow.
