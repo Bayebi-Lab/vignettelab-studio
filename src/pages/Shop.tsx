@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowRight } from "lucide-react";
@@ -7,6 +7,7 @@ import { useProducts } from "@/hooks/useProducts";
 import maternityImg from "@/assets/category-maternity.jpg";
 
 const Shop = () => {
+  const navigate = useNavigate();
   const { products, loading, error } = useProducts();
 
   if (loading) {
@@ -80,9 +81,9 @@ const Shop = () => {
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                   className="group"
                 >
-                  <Link to={`/products/${product.slug}`} className="block">
-                    <div className="bg-background rounded-2xl overflow-hidden shadow-sm border border-border hover:shadow-lg hover:border-primary/20 transition-all duration-300">
-                      {/* Product Image */}
+                  <div className="bg-background rounded-2xl overflow-hidden shadow-sm border border-border hover:shadow-lg hover:border-primary/20 transition-all duration-300">
+                    {/* Product Image - links to details */}
+                    <Link to={`/products/${product.slug}`} className="block">
                       <div className="relative aspect-[4/5] overflow-hidden bg-muted">
                         {isExternalImage ? (
                           <img
@@ -110,9 +111,11 @@ const Shop = () => {
                           </span>
                         )}
                       </div>
+                    </Link>
 
-                      {/* Product Info */}
-                      <div className="p-6">
+                    {/* Product Info */}
+                    <div className="p-6">
+                      <Link to={`/products/${product.slug}`} className="block">
                         <span className="text-primary text-xs font-medium uppercase tracking-wider">
                           {product.category}
                         </span>
@@ -132,13 +135,18 @@ const Shop = () => {
                             </span>
                           )}
                         </div>
-                        <Button variant="outline" size="sm" className="mt-4 w-full group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary">
-                          <ArrowRight size={16} className="mr-2" />
-                          Choose This Portrait
-                        </Button>
-                      </div>
+                      </Link>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="mt-4 w-full group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary"
+                        onClick={() => navigate(`/checkout?product=${product.slug}&quantity=1&step=1`)}
+                      >
+                        <ArrowRight size={16} className="mr-2" />
+                        Choose This Portrait
+                      </Button>
                     </div>
-                  </Link>
+                  </div>
                 </motion.div>
               );
             })}

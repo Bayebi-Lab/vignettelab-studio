@@ -3,7 +3,7 @@ import { Instagram, Facebook, Twitter, Mail, Heart } from "lucide-react";
 
 const footerLinks = {
   explore: [
-    { label: "Shop", href: "/shop" },
+    { label: "Our Portraits", href: "/shop" },
     { label: "How It Works", href: "/how-it-works" },
     { label: "FAQ", href: "/faq" },
   ],

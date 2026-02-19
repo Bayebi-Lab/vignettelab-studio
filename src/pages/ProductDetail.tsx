@@ -1,11 +1,7 @@
-import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Carousel,
   CarouselContent,
@@ -13,7 +9,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Loader2, Minus, Plus, Share2, ChevronLeft, Check } from "lucide-react";
+import { Loader2, Share2, ChevronLeft, Check, Download } from "lucide-react";
 import { useProduct } from "@/hooks/useProducts";
 import maternityImg from "@/assets/category-maternity.jpg";
 
@@ -21,16 +17,9 @@ const ProductDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { product, loading, error } = useProduct(slug);
-  const [quantity, setQuantity] = useState(1);
-  const [recipientName, setRecipientName] = useState("");
-  const [greetingMessage, setGreetingMessage] = useState("");
-  const [fromName, setFromName] = useState("");
-  const [specialInstructions, setSpecialInstructions] = useState("");
-  const [customName, setCustomName] = useState("");
 
-  const handleAddToCart = () => {
-    // Navigate to checkout with product
-    navigate(`/checkout?product=${product?.slug}&quantity=${quantity}&step=1`);
+  const handleChoosePortrait = () => {
+    navigate(`/checkout?product=${product?.slug}&quantity=1&step=1`);
   };
 
   const handleShare = async () => {
@@ -70,7 +59,7 @@ const ProductDetail = () => {
             <p className="text-destructive mb-4">Product not found</p>
             <p className="text-muted-foreground text-sm">{error || "This product doesn't exist."}</p>
             <Button asChild className="mt-4">
-              <Link to="/shop">Back to Shop</Link>
+              <Link to="/shop">Explore Portraits</Link>
             </Button>
           </div>
         </section>
@@ -159,42 +148,21 @@ const ProductDetail = () => {
                 )}
               </div>
 
-              {/* Quantity & Add to Cart */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <div className="flex items-center border border-border rounded-lg">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-12 w-12 rounded-r-none"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  >
-                    <Minus size={18} />
-                  </Button>
-                  <span className="px-6 py-3 min-w-[3rem] text-center font-medium">
-                    {quantity}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-12 w-12 rounded-l-none"
-                    onClick={() => setQuantity(quantity + 1)}
-                  >
-                    <Plus size={18} />
-                  </Button>
-                </div>
+              {/* Add to Cart - One product per session (digital) */}
+              <div className="mb-8">
                 <Button
                   variant="hero"
                   size="lg"
-                  className="flex-1 h-12 font-semibold"
-                  onClick={handleAddToCart}
+                  className="w-full sm:w-auto h-12 font-semibold px-8"
+                  onClick={handleChoosePortrait}
                 >
-                  Add to Cart — ${(product.price * quantity).toFixed(2)}
+                  Choose This Portrait — ${product.price.toFixed(2)}
                 </Button>
+                <p className="text-sm text-muted-foreground mt-3 flex items-center gap-2">
+                  <Download size={14} />
+                  Digital delivery within 24 hours. One portrait experience per session.
+                </p>
               </div>
-
-              <p className="text-sm text-muted-foreground mb-8">
-                Shipping calculated at checkout.
-              </p>
 
               {/* Description */}
               <div className="prose prose-neutral dark:prose-invert max-w-none mb-8">
@@ -215,89 +183,10 @@ const ProductDetail = () => {
               </div>
 
               {/* Share */}
-              <Button variant="outline" size="sm" onClick={handleShare} className="mb-8">
+              <Button variant="outline" size="sm" onClick={handleShare}>
                 <Share2 size={16} className="mr-2" />
                 Share
               </Button>
-
-              {/* Personalization (Loly Gift style) */}
-              <div className="border-t border-border pt-8 space-y-6">
-                <h3 className="font-serif text-xl text-foreground">Personalize your order</h3>
-
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="recipient">Recipient name</Label>
-                    <Input
-                      id="recipient"
-                      placeholder="Name of the recipient"
-                      value={recipientName}
-                      onChange={(e) => setRecipientName(e.target.value)}
-                      maxLength={50}
-                      className="mt-2"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {recipientName.length}/50
-                    </p>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="message">Your message</Label>
-                    <Textarea
-                      id="message"
-                      placeholder="This message will be printed on the greeting card."
-                      value={greetingMessage}
-                      onChange={(e) => setGreetingMessage(e.target.value)}
-                      maxLength={200}
-                      rows={3}
-                      className="mt-2"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {greetingMessage.length}/200
-                    </p>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="from">From (optional)</Label>
-                    <Input
-                      id="from"
-                      placeholder="Your name"
-                      value={fromName}
-                      onChange={(e) => setFromName(e.target.value)}
-                      maxLength={50}
-                      className="mt-2"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="custom">Name for personalization</Label>
-                    <Input
-                      id="custom"
-                      placeholder="This name will be printed on the product."
-                      value={customName}
-                      onChange={(e) => setCustomName(e.target.value)}
-                      maxLength={20}
-                      className="mt-2"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="instructions">Special instructions (optional)</Label>
-                    <Textarea
-                      id="instructions"
-                      placeholder="Any specific requests for your portraits"
-                      value={specialInstructions}
-                      onChange={(e) => setSpecialInstructions(e.target.value)}
-                      maxLength={150}
-                      rows={2}
-                      className="mt-2"
-                    />
-                  </div>
-                </div>
-
-                <Button variant="hero" size="lg" className="w-full" onClick={handleAddToCart}>
-                  Add to Cart — ${(product.price * quantity).toFixed(2)}
-                </Button>
-              </div>
             </div>
           </motion.div>
         </div>
