@@ -78,8 +78,8 @@ export default async function handler(req: Request) {
   async function createOrderFromPayment(
     paymentIntentId: string,
     customerEmail: string,
-    packageName: string,
-    packageId: string | null,
+    productName: string,
+    productId: string | null,
     price: number,
     imageUrls: string[]
   ) {
@@ -102,8 +102,9 @@ export default async function handler(req: Request) {
       .from('orders')
       .insert({
         customer_email: customerEmail,
-        package_id: null, // We'll store package name instead
-        package_name: packageName,
+        package_id: null,
+        package_name: productName, // Denormalized for display
+        product_id: productId,
         price,
         status: 'processing',
         stripe_payment_intent_id: paymentIntentId,
@@ -140,7 +141,7 @@ export default async function handler(req: Request) {
         await resend.emails.send({
           from: process.env.ADMIN_EMAIL || 'noreply@vignettelab.com',
           to: customerEmail,
-          subject: 'Order Confirmed - VignetteLab Studio',
+          subject: 'Maternity Portrait Order Confirmed - VignetteLab Studio',
           html: `
             <!DOCTYPE html>
             <html>
@@ -149,18 +150,18 @@ export default async function handler(req: Request) {
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
               </head>
               <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h1 style="color: #8B4513;">Order Confirmed!</h1>
-                <p>Thank you for your order. We've received your payment and will start processing your portraits shortly.</p>
+                <h1 style="color: #8B4513;">Maternity Portrait Order Confirmed!</h1>
+                <p>Thank you for your order. We've received your payment and will start processing your beautiful maternity portraits shortly.</p>
                 
                 <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
                   <h2 style="margin-top: 0;">Order Details</h2>
                   <p><strong>Order ID:</strong> ${order.id}</p>
-                  <p><strong>Package:</strong> ${packageName}</p>
+                  <p><strong>Product:</strong> ${productName}</p>
                   <p><strong>Amount:</strong> $${order.price.toFixed(2)}</p>
                   <p><strong>Status:</strong> Processing</p>
                 </div>
                 
-                <p>We'll send you another email with download links once your portraits are ready (typically within 24 hours).</p>
+                <p>We'll send you another email with download links once your maternity portraits are ready (typically within 24 hours).</p>
                 
                 <p>If you have any questions, please don't hesitate to contact us.</p>
                 
@@ -183,20 +184,23 @@ export default async function handler(req: Request) {
     const session = event.data.object as Stripe.Checkout.Session;
 
     try {
-      const { package_id, package_name, image_urls } = session.metadata || {};
+      const metadata = session.metadata || {};
+      const productId = metadata.product_id || metadata.package_id;
+      const productName = metadata.product_name || metadata.package_name;
+      const imageUrls = metadata.image_urls;
 
-      if (!package_id || !package_name || !image_urls) {
+      if (!productName || !imageUrls) {
         throw new Error('Missing metadata in session');
       }
 
-      const imageUrlsArray = JSON.parse(image_urls as string);
+      const imageUrlsArray = JSON.parse(imageUrls as string);
       const customerEmail = session.customer_email || session.customer_details?.email || '';
 
       const order = await createOrderFromPayment(
         session.payment_intent as string,
         customerEmail,
-        package_name,
-        package_id,
+        productName,
+        productId || null,
         (session.amount_total || 0) / 100,
         imageUrlsArray
       );
@@ -228,9 +232,13 @@ export default async function handler(req: Request) {
     const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
     try {
-      const { package_id, package_name, customer_email, image_urls } = paymentIntent.metadata || {};
+      const metadata = paymentIntent.metadata || {};
+      const productId = metadata.product_id || metadata.package_id;
+      const productName = metadata.product_name || metadata.package_name;
+      const customerEmail = metadata.customer_email;
+      const imageUrls = metadata.image_urls;
 
-      if (!package_name || !customer_email || !image_urls) {
+      if (!productName || !customerEmail || !imageUrls) {
         console.log('Missing metadata in payment intent, skipping order creation');
         // Return success but don't create order - frontend will handle it
         return new Response(
@@ -242,14 +250,14 @@ export default async function handler(req: Request) {
         );
       }
 
-      const imageUrlsArray = JSON.parse(image_urls as string);
+      const imageUrlsArray = JSON.parse(imageUrls as string);
       const price = (paymentIntent.amount || 0) / 100;
 
       const order = await createOrderFromPayment(
         paymentIntent.id,
-        customer_email,
-        package_name,
-        package_id || null,
+        customerEmail,
+        productName,
+        productId || null,
         price,
         imageUrlsArray
       );

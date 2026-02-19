@@ -160,7 +160,7 @@ export function ImageUpload({
                 : 'Drag & drop images here, or click to select'}
             </p>
             <p className="text-xs text-muted-foreground">
-              Upload {minImages}-{maxImages} images (JPG, PNG, WEBP, max {maxFileSizeMB}MB each)
+              Upload {minImages}-{maxImages} photos showing your beautiful bump (JPG, PNG, WEBP, max {maxFileSizeMB}MB each)
             </p>
           </div>
           {images.length < maxImages && (

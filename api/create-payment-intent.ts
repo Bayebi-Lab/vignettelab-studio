@@ -26,10 +26,10 @@ export default async function handler(req: Request) {
 
   try {
     const body = await req.json();
-    const { package_id, package_name, price, customer_email, image_urls } = body;
+    const { product_id, product_name, price, customer_email, image_urls } = body;
 
     // Validate required fields
-    if (!package_id || !package_name || !price || !customer_email || !image_urls) {
+    if (!product_id || !product_name || !price || !customer_email || !image_urls) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         {
@@ -80,8 +80,8 @@ export default async function handler(req: Request) {
       amount: Math.round(priceAmount * 100), // Convert to cents
       currency: 'usd',
       metadata: {
-        package_id,
-        package_name,
+        product_id,
+        product_name,
         customer_email,
         image_urls: JSON.stringify(image_urls),
       },

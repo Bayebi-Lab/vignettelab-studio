@@ -30,7 +30,7 @@ export default function CheckoutCancel() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild variant="outline">
-                <Link to="/pricing">View Packages</Link>
+                <Link to="/shop">View Products</Link>
               </Button>
               <Button asChild>
                 <Link to="/">Back to Home</Link>

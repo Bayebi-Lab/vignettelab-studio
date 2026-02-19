@@ -18,11 +18,11 @@ import {
 } from '@/components/ui/form';
 import { ImageUpload } from '@/components/checkout/ImageUpload';
 import { PaymentForm } from '@/components/checkout/PaymentForm';
-import { Check, ArrowLeft, ArrowRight, Package as PackageIcon, Upload, CreditCard, Loader2 } from 'lucide-react';
+import { Check, ArrowLeft, ArrowRight, ShoppingBag, Upload, CreditCard, Loader2 } from 'lucide-react';
 import { uploadImages } from '@/lib/storage';
 import { toast } from 'sonner';
 import { stripePromise } from '@/lib/stripe';
-import { usePackages, type Package } from '@/hooks/usePackages';
+import { useProducts, type Product } from '@/hooks/useProducts';
 
 const checkoutSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -35,12 +35,13 @@ type Step = 1 | 2 | 3;
 export default function Checkout() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { packages, loading: packagesLoading, error: packagesError } = usePackages();
-  const initialPackageSlug = searchParams.get('package') || '';
+  const { products, loading: productsLoading, error: productsError } = useProducts();
+  const initialProductSlug = searchParams.get('product') || '';
   const initialStep = parseInt(searchParams.get('step') || '1', 10) as Step;
 
   const [currentStep, setCurrentStep] = useState<Step>(initialStep);
-  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [quantity, setQuantity] = useState(1);
   const [images, setImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -54,55 +55,58 @@ export default function Checkout() {
     },
   });
 
-  // Set initial package when packages are loaded
+  // Set initial product when products are loaded
   useEffect(() => {
-    if (packages.length > 0 && !selectedPackage) {
-      const pkg = initialPackageSlug
-        ? packages.find((p) => p.name.toLowerCase() === initialPackageSlug.toLowerCase())
+    if (products.length > 0 && !selectedProduct) {
+      const product = initialProductSlug
+        ? products.find((p) => p.slug === initialProductSlug)
         : null;
-      setSelectedPackage(pkg || packages[0]);
+      setSelectedProduct(product || products[0]);
+      const qty = parseInt(searchParams.get('quantity') || '1', 10);
+      setQuantity(Math.max(1, qty));
     }
-  }, [packages, initialPackageSlug, selectedPackage]);
+  }, [products, initialProductSlug, selectedProduct, searchParams]);
 
   // Update URL when step changes
   useEffect(() => {
-    if (selectedPackage) {
+    if (selectedProduct) {
       const params = new URLSearchParams(searchParams);
-      params.set('package', selectedPackage.name.toLowerCase());
+      params.set('product', selectedProduct.slug);
+      params.set('quantity', quantity.toString());
       params.set('step', currentStep.toString());
       navigate(`/checkout?${params.toString()}`, { replace: true });
     }
-  }, [currentStep, selectedPackage, navigate, searchParams]);
+  }, [currentStep, selectedProduct, quantity, navigate, searchParams]);
 
-  const handlePackageSelect = (packageId: string) => {
-    const pkg = packages.find((p) => p.id === packageId);
-    if (pkg) {
-      setSelectedPackage(pkg);
+  const handleProductSelect = (productId: string) => {
+    const product = products.find((p) => p.id === productId);
+    if (product) {
+      setSelectedProduct(product);
     }
   };
 
-  if (packagesLoading) {
+  if (productsLoading) {
     return (
       <Layout>
         <section className="pt-24 pb-16 min-h-screen bg-cream flex items-center justify-center">
           <div className="text-center">
             <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
-            <p className="text-muted-foreground">Loading packages...</p>
+            <p className="text-muted-foreground">Loading products...</p>
           </div>
         </section>
       </Layout>
     );
   }
 
-  if (packagesError || packages.length === 0) {
+  if (productsError || products.length === 0) {
     return (
       <Layout>
         <section className="pt-24 pb-16 min-h-screen bg-cream flex items-center justify-center">
           <div className="text-center">
-            <p className="text-destructive mb-4">Error loading packages</p>
-            <p className="text-muted-foreground text-sm">{packagesError || 'No packages available'}</p>
+            <p className="text-destructive mb-4">Error loading products</p>
+            <p className="text-muted-foreground text-sm">{productsError || 'No products available'}</p>
             <Button asChild className="mt-4">
-              <Link to="/pricing">Back to Pricing</Link>
+              <Link to="/shop">Back to Shop</Link>
             </Button>
           </div>
         </section>
@@ -110,7 +114,7 @@ export default function Checkout() {
     );
   }
 
-  if (!selectedPackage) {
+  if (!selectedProduct) {
     return (
       <Layout>
         <section className="pt-24 pb-16 min-h-screen bg-cream flex items-center justify-center">
@@ -122,6 +126,8 @@ export default function Checkout() {
       </Layout>
     );
   }
+
+  const totalPrice = selectedProduct.price * quantity;
 
   const handleStep2Next = async (values: CheckoutFormValues) => {
     if (images.length < 1) {
@@ -149,9 +155,10 @@ export default function Checkout() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          package_id: selectedPackage.id,
-          package_name: selectedPackage.name,
-          price: selectedPackage.price,
+          product_id: selectedProduct.id,
+          product_name: selectedProduct.name,
+          price: totalPrice,
+          quantity,
           customer_email: values.email,
           image_urls: urls,
         }),
@@ -163,7 +170,6 @@ export default function Checkout() {
           const error = await response.json();
           errorMessage = error.message || error.error || errorMessage;
         } catch {
-          // If response is not JSON, use status text
           errorMessage = response.statusText || `HTTP ${response.status}`;
         }
         throw new Error(errorMessage);
@@ -190,8 +196,8 @@ export default function Checkout() {
   const steps = [
     {
       number: 1,
-      title: 'Select Package',
-      icon: PackageIcon,
+      title: 'Select Product',
+      icon: ShoppingBag,
     },
     {
       number: 2,
@@ -210,11 +216,11 @@ export default function Checkout() {
       <section className="pt-24 pb-16 min-h-screen bg-cream">
         <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
           <Link
-            to="/pricing"
+            to="/shop"
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors"
           >
             <ArrowLeft size={16} />
-            Back to Pricing
+            Back to Shop
           </Link>
 
           <motion.div
@@ -227,7 +233,7 @@ export default function Checkout() {
               Complete Your Order
             </h1>
             <p className="text-muted-foreground mb-8">
-              Follow these simple steps to get your AI-generated portraits.
+              Follow these simple steps to get your beautiful maternity portraits.
             </p>
 
             {/* Step Progress Indicator */}
@@ -288,31 +294,31 @@ export default function Checkout() {
                   transition={{ duration: 0.3 }}
                 >
                   <div className="space-y-6">
-                    <h2 className="font-serif text-2xl">Select Your Package</h2>
+                    <h2 className="font-serif text-2xl">Select Your Product</h2>
                     <div className="grid md:grid-cols-3 gap-4">
-                      {packages.map((pkg) => (
+                      {products.map((product) => (
                         <button
-                          key={pkg.id}
-                          onClick={() => handlePackageSelect(pkg.id)}
+                          key={product.id}
+                          onClick={() => handleProductSelect(product.id)}
                           className={`p-6 rounded-lg border-2 text-left transition-all ${
-                            selectedPackage.id === pkg.id
+                            selectedProduct.id === product.id
                               ? 'border-primary bg-primary/5'
                               : 'border-border hover:border-primary/50'
                           }`}
                         >
                           <div className="flex items-start justify-between mb-4">
                             <div>
-                              <h3 className="font-semibold text-lg">{pkg.name}</h3>
+                              <h3 className="font-semibold text-lg">{product.name}</h3>
                               <p className="text-muted-foreground text-sm">
-                                {pkg.portraits} portraits
+                                {product.portraits_count} portraits
                               </p>
                             </div>
                             <div className="text-right">
-                              <p className="font-serif text-2xl">${pkg.price}</p>
+                              <p className="font-serif text-2xl">${product.price}</p>
                             </div>
                           </div>
                           <ul className="space-y-2">
-                            {pkg.features.slice(0, 3).map((feature) => (
+                            {product.features.slice(0, 3).map((feature) => (
                               <li key={feature} className="flex items-start gap-2 text-sm">
                                 <Check size={16} className="text-primary mt-0.5 flex-shrink-0" />
                                 <span>{feature}</span>
@@ -344,21 +350,21 @@ export default function Checkout() {
                     <div>
                       <h2 className="font-serif text-2xl mb-2">Upload Your Photos</h2>
                       <p className="text-muted-foreground">
-                        Upload 1-3 photos to get started with your {selectedPackage.name} package.
+                        Upload 1-3 photos showing your beautiful bump to get started with {selectedProduct.name}.
                       </p>
                     </div>
 
-                    {/* Package Summary */}
+                    {/* Product Summary */}
                     <div className="bg-cream rounded-lg p-4">
                       <div className="flex items-start justify-between">
                         <div>
-                          <h3 className="font-semibold">{selectedPackage.name}</h3>
+                          <h3 className="font-semibold">{selectedProduct.name}</h3>
                           <p className="text-muted-foreground text-sm">
-                            {selectedPackage.portraits} AI-generated portraits
+                            {quantity} × {selectedProduct.portraits_count} AI-generated portraits
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="font-serif text-xl">${selectedPackage.price}</p>
+                          <p className="font-serif text-xl">${totalPrice.toFixed(2)}</p>
                         </div>
                       </div>
                     </div>
@@ -414,9 +420,7 @@ export default function Checkout() {
                             disabled={isUploading || images.length < 1}
                           >
                             {isUploading ? (
-                              <>
-                                <span className="mr-2">Uploading...</span>
-                              </>
+                              <>Uploading...</>
                             ) : (
                               <>
                                 Continue to Payment
@@ -458,11 +462,11 @@ export default function Checkout() {
                     >
                       <PaymentForm
                         clientSecret={clientSecret}
-                        packageName={selectedPackage.name}
-                        price={selectedPackage.price}
+                        productName={selectedProduct.name}
+                        price={totalPrice}
                         customerEmail={form.getValues('email')}
                         imageUrls={imageUrls}
-                        packageId={selectedPackage.id}
+                        productId={selectedProduct.id}
                         paymentIntentId={paymentIntentId}
                         onSuccess={handlePaymentSuccess}
                       />
@@ -486,4 +490,4 @@ export default function Checkout() {
       </section>
     </Layout>
   );
-}
+};

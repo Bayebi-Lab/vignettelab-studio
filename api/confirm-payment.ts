@@ -42,10 +42,10 @@ export default async function handler(req: Request) {
 
   try {
     const body = await req.json();
-    const { payment_intent_id, package_id, package_name, price, customer_email, image_urls } = body;
+    const { payment_intent_id, product_id, product_name, price, customer_email, image_urls } = body;
 
-    // Validate required fields
-    if (!payment_intent_id || !package_id || !package_name || !price || !customer_email || !image_urls) {
+    // Validate required fields (product_id optional for backward compat)
+    if (!payment_intent_id || !product_name || !price || !customer_email || !image_urls) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         {
@@ -73,15 +73,15 @@ export default async function handler(req: Request) {
     const imageUrlsArray = Array.isArray(image_urls) ? image_urls : JSON.parse(image_urls);
 
     // Create order in database
-    // package_id can be UUID or null (for backward compatibility)
-    const packageIdUuid = package_id && package_id.length === 36 ? package_id : null;
-    
+    const productIdUuid = product_id && product_id.length === 36 ? product_id : null;
+
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert({
         customer_email,
-        package_id: packageIdUuid, // Use UUID if provided, otherwise null
-        package_name,
+        package_id: null,
+        package_name: product_name, // Keep column name for backward compat
+        product_id: productIdUuid,
         price: typeof price === 'number' ? price : parseFloat(price),
         status: 'processing',
         stripe_payment_intent_id: payment_intent_id,
@@ -133,7 +133,7 @@ export default async function handler(req: Request) {
                 <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
                   <h2 style="margin-top: 0;">Order Details</h2>
                   <p><strong>Order ID:</strong> ${order.id}</p>
-                  <p><strong>Package:</strong> ${package_name}</p>
+                  <p><strong>Product:</strong> ${product_name}</p>
                   <p><strong>Amount:</strong> $${order.price.toFixed(2)}</p>
                   <p><strong>Status:</strong> Processing</p>
                 </div>

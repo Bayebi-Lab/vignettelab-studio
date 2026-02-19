@@ -33,7 +33,7 @@ export default function CheckoutSuccess() {
             </h1>
             <p className="text-muted-foreground mb-6">
               Thank you for your order. We've received your payment and will start processing your
-              portraits shortly.
+              beautiful maternity portraits shortly.
             </p>
 
             {orderId && (
@@ -50,7 +50,7 @@ export default function CheckoutSuccess() {
               </div>
               <p className="text-sm text-foreground">
                 We've sent a confirmation email with your order details. You'll receive another
-                email with download links once your portraits are ready.
+                email with download links once your maternity portraits are ready.
               </p>
             </div>
 

@@ -10,22 +10,22 @@ import { toast } from 'sonner';
 
 interface PaymentFormProps {
   clientSecret: string;
-  packageName: string;
+  productName: string;
   price: number;
   customerEmail: string;
   imageUrls: string[];
-  packageId: string;
+  productId: string;
   paymentIntentId: string;
   onSuccess: (orderId: string) => void;
 }
 
 export function PaymentForm({
   clientSecret,
-  packageName,
+  productName,
   price,
   customerEmail,
   imageUrls,
-  packageId,
+  productId,
   paymentIntentId,
   onSuccess,
 }: PaymentFormProps) {
@@ -69,8 +69,8 @@ export function PaymentForm({
           },
           body: JSON.stringify({
             payment_intent_id: paymentIntentId,
-            package_id: packageId,
-            package_name: packageName,
+            product_id: productId,
+            product_name: productName,
             price,
             customer_email: customerEmail,
             image_urls: imageUrls,
@@ -124,8 +124,8 @@ export function PaymentForm({
 
       <div className="border-t pt-6">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-muted-foreground">Package</span>
-          <span className="font-semibold">{packageName}</span>
+          <span className="text-muted-foreground">Product</span>
+          <span className="font-semibold">{productName}</span>
         </div>
         <div className="flex items-center justify-between mb-4">
           <span className="text-muted-foreground">Images</span>

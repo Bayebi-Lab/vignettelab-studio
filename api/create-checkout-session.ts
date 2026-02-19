@@ -30,10 +30,10 @@ export default async function handler(req: Request) {
 
   try {
     const body = await req.json();
-    const { package_id, package_name, price, customer_email, image_urls } = body;
+    const { product_id, product_name, price, customer_email, image_urls } = body;
 
     // Validate required fields
-    if (!package_id || !package_name || !price || !customer_email || !image_urls) {
+    if (!product_id || !product_name || !price || !customer_email || !image_urls) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         {
@@ -79,8 +79,8 @@ export default async function handler(req: Request) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: `${package_name} Package`,
-              description: `AI-generated portrait package`,
+              name: product_name,
+              description: `AI-generated maternity portrait product`,
             },
             unit_amount: Math.round(price * 100), // Convert to cents
           },
@@ -90,8 +90,8 @@ export default async function handler(req: Request) {
       mode: 'payment',
       customer_email,
       metadata: {
-        package_id,
-        package_name,
+        product_id,
+        product_name,
         image_urls: JSON.stringify(image_urls),
       },
       success_url: `${appUrl}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,

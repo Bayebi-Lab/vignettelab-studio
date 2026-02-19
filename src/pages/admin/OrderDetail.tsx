@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { ImageUploader } from '@/components/admin/ImageUploader';
 import { supabase } from '@/lib/supabase';
 import { uploadFinalImages } from '@/lib/storage';
-import { ArrowLeft, Mail, Package, Calendar, Loader2, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Mail, ShoppingBag, Calendar, Loader2, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -238,8 +238,8 @@ export default function OrderDetail() {
 
                     <div>
                       <p className="text-sm text-muted-foreground flex items-center gap-2">
-                        <Package size={14} />
-                        Package
+                        <ShoppingBag size={14} />
+                        Product
                       </p>
                       <p className="font-medium">{order.package_name}</p>
                     </div>
@@ -332,7 +332,7 @@ export default function OrderDetail() {
                     <CardContent className="space-y-4">
                       <ImageUploader
                         onImagesChange={setFinalImageFiles}
-                        maxImages={order.package_name === 'Professional' ? 50 : 20}
+                        maxImages={['Professional', 'Complete Collection'].includes(order.package_name) ? 50 : ['Glow Package', 'Family'].includes(order.package_name) ? 20 : 5}
                       />
                       <Button
                         onClick={handleUploadFinalImages}
