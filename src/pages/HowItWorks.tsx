@@ -2,37 +2,37 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Upload, CreditCard, Sparkles, Check, ArrowRight } from "lucide-react";
+import { Sparkles, Image, CreditCard, Heart, Check, ArrowRight } from "lucide-react";
 import heroImg from "@/assets/hero-family.jpg";
 
 const steps = [
   {
-    icon: ShoppingBag,
+    icon: Sparkles,
     number: "01",
-    title: "Pick a Product",
-    description: "Choose the perfect maternity portrait product for your needs. From our Essential Glow with 5 portraits to our Complete Collection with 50 portraits, we have options for every expecting mother.",
+    title: "Choose Your Portrait Experience",
+    description: "Discover the perfect fit for your pregnancy journey—from a few cherished portraits to a full collection you’ll treasure forever. From Essential Glow (5 portraits) to Complete Collection (50 portraits).",
     tips: [
-      "Compare features and pricing",
-      "Select the product that fits your needs",
-      "All products include high-quality AI maternity portraits",
+      "Compare features and what each experience includes",
+      "Pick the one that matches your vision",
+      "All include high-quality AI maternity portraits",
     ],
   },
   {
-    icon: Upload,
+    icon: Image,
     number: "02",
-    title: "Upload Your Images",
-    description: "Upload photos showing your beautiful bump. Selfies, casual snapshots, or any images where you love how you look work perfectly. Our AI will use these to create your maternity portraits. Each image should be under 10MB.",
+    title: "Share Your Bump Photos",
+    description: "Upload photos where you love how you look. Selfies, casual snapshots—our AI celebrates your unique glow and transforms them into stunning portraits. Each image under 10MB.",
     tips: [
       "Showcase your bump prominently",
       "Use well-lit photos to capture your glow",
-      "Include different angles - both close-ups and full-body shots work great",
+      "Different angles work great—close-ups and full-body",
     ],
   },
   {
     icon: CreditCard,
     number: "03",
-    title: "Pay Securely",
-    description: "Complete your payment securely with our integrated checkout. Your payment is processed safely and you'll receive an immediate confirmation email.",
+    title: "Check Out Securely",
+    description: "Complete your payment safely with our integrated checkout. You’ll receive an immediate confirmation email so you can relax and look forward to your portraits.",
     tips: [
       "Secure payment processing",
       "Instant order confirmation",
@@ -40,14 +40,14 @@ const steps = [
     ],
   },
   {
-    icon: Sparkles,
+    icon: Heart,
     number: "04",
-    title: "AI Processing & Delivery",
-    description: "Our advanced AI goes to work, analyzing your photos and creating stunning studio-quality maternity portraits. You'll receive your bump photos via email within 24 hours (or faster with premium products).",
+    title: "Receive Your Portraits",
+    description: "Our AI creates studio-quality maternity portraits that preserve your unique features and pregnancy glow. Your images arrive via email within 24 hours (faster with premium).",
     tips: [
-      "Processing takes 15-30 minutes",
-      "AI preserves your unique features and pregnancy glow",
-      "Download links sent to your email",
+      "Processing typically takes 15–30 minutes",
+      "AI honors your natural beauty and glow",
+      "Download links sent straight to your inbox",
     ],
   },
 ];
@@ -74,17 +74,17 @@ const HowItWorks = () => {
             className="text-center max-w-3xl mx-auto"
           >
             <span className="text-primary font-medium text-sm uppercase tracking-widest mb-4 block">
-              The Process
+              Your Journey
             </span>
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground mb-6">
-              How VignetteLab Works for Maternity Photos
+              How We Capture Your Pregnancy Glow
             </h1>
             <p className="text-muted-foreground text-lg mb-8">
-              Creating beautiful maternity portraits has never been easier. Pick your product, upload your bump photos, pay securely, and let our AI capture your pregnancy glow.
+              Creating beautiful maternity portraits has never been easier. Choose your portrait experience, share your bump photos from home, and receive studio-quality images—all without appointments or hassle.
             </p>
             <Button variant="hero" size="xl" className="group" asChild>
               <Link to="/shop">
-                Start Your Session
+                Discover Your Glow
                 <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
@@ -162,7 +162,7 @@ const HowItWorks = () => {
               Ready to Capture Your Pregnancy Glow?
             </h2>
             <p className="text-primary-foreground/80 text-lg mb-8 max-w-xl mx-auto">
-              Start your maternity photography journey today and see the magic for yourself.
+              Join thousands of expecting mothers who’ve discovered the joy of beautiful maternity portraits—from the comfort of home.
             </p>
             <Button 
               variant="warm" 
@@ -171,7 +171,7 @@ const HowItWorks = () => {
               asChild
             >
               <Link to="/shop">
-                Get Started Now
+                Discover Your Glow
               </Link>
             </Button>
           </motion.div>

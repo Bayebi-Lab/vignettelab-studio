@@ -51,7 +51,7 @@ export function Header() {
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-4">
             <Button variant="hero" size="lg" asChild>
-              <Link to="/shop">Book Your Session</Link>
+              <Link to="/shop">Discover Your Glow</Link>
             </Button>
           </div>
 
@@ -92,7 +92,7 @@ export function Header() {
                 </Link>
               ))}
               <Button variant="hero" size="lg" className="mt-4" asChild>
-                <Link to="/shop">Shop Now</Link>
+                <Link to="/shop">Discover Your Glow</Link>
               </Button>
             </nav>
           </motion.div>

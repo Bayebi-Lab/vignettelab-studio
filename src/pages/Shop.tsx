@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { Loader2, ShoppingBag, ArrowRight } from "lucide-react";
+import { Loader2, ArrowRight } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
 import maternityImg from "@/assets/category-maternity.jpg";
 
@@ -100,7 +100,7 @@ const Shop = () => {
                         <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                           <span className="inline-flex items-center gap-2 text-rose-gold-light text-sm font-medium">
-                            View Product
+                            Discover This Portrait
                             <ArrowRight size={16} />
                           </span>
                         </div>
@@ -133,8 +133,8 @@ const Shop = () => {
                           )}
                         </div>
                         <Button variant="outline" size="sm" className="mt-4 w-full group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary">
-                          <ShoppingBag size={16} className="mr-2" />
-                          Add to Cart
+                          <ArrowRight size={16} className="mr-2" />
+                          Choose This Portrait
                         </Button>
                       </div>
                     </div>

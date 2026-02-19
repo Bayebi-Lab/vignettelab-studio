@@ -1,24 +1,24 @@
 import { motion } from "framer-motion";
-import { Package, Upload, CreditCard } from "lucide-react";
+import { Sparkles, Image, Heart } from "lucide-react";
 
 const steps = [
   {
-    icon: Package,
+    icon: Sparkles,
     number: "01",
-    title: "Pick a Package",
-    description: "Choose the perfect product for your needs. We have options for every expecting mother.",
+    title: "Choose Your Portrait Experience",
+    description: "Find the perfect fit for your pregnancy journey—from a few cherished portraits to a full collection you’ll treasure forever.",
   },
   {
-    icon: Upload,
+    icon: Image,
     number: "02",
-    title: "Upload Your Images",
-    description: "Upload 1-3 photos showing your beautiful bump (max 10MB each). Selfies, casual snapshots, or any images where you love how you look work perfectly.",
+    title: "Share Your Bump Photos",
+    description: "Upload 1–3 photos where you love how you look. Selfies, casual snapshots—our AI celebrates your unique glow. Max 10MB each.",
   },
   {
-    icon: CreditCard,
+    icon: Heart,
     number: "03",
-    title: "Pay",
-    description: "Complete your payment securely. Your portraits will be processed and delivered via email within 24 hours.",
+    title: "Receive Your Portraits",
+    description: "Check out securely, then relax. Your studio-quality maternity portraits arrive in your inbox within 24 hours.",
   },
 ];
 
@@ -34,13 +34,13 @@ export function HowItWorksSection() {
           className="text-center mb-16"
         >
           <span className="text-primary font-medium text-sm uppercase tracking-widest mb-4 block">
-            Simple Process
+            Your Journey
           </span>
           <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground mb-4">
             How It Works
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Get stunning maternity portraits in three simple steps: pick a product, upload your bump photos, and pay. No appointments, no hassle.
+            Celebrate your pregnancy glow in three simple steps—choose your portraits, share your photos from home, and receive your beautiful images. No appointments, no studio visits.
           </p>
         </motion.div>
 

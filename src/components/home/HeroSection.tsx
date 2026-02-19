@@ -56,16 +56,12 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-wrap gap-4"
           >
             <Button variant="hero" size="xl" className="group" asChild>
               <a href="/shop">
-                Shop Now
+                Discover Your Glow
                 <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
               </a>
-            </Button>
-            <Button variant="heroOutline" size="xl" asChild>
-              <a href="/shop">View Products</a>
             </Button>
           </motion.div>
 

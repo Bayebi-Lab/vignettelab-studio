@@ -35,7 +35,7 @@ export function CTASection() {
             studio-quality maternity portraits without leaving home.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex justify-center">
             <Button 
               variant="warm" 
               size="xl" 
@@ -43,12 +43,9 @@ export function CTASection() {
               asChild
             >
               <Link to="/shop">
-                Shop Now
+                Discover Your Glow
                 <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
               </Link>
-            </Button>
-            <Button variant="heroOutline" size="xl" asChild>
-              <Link to="/shop">View Products</Link>
             </Button>
           </div>
 

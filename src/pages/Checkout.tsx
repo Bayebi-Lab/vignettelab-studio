@@ -220,7 +220,7 @@ export default function Checkout() {
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors"
           >
             <ArrowLeft size={16} />
-            Back to Shop
+            Explore Portraits
           </Link>
 
           <motion.div
