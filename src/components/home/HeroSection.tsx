@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import heroImage from "@/assets/hero-family.jpg";
@@ -58,10 +59,10 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             <Button variant="hero" size="xl" className="group" asChild>
-              <a href="/shop">
+              <Link to="/shop">
                 Discover Your Glow
                 <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
-              </a>
+              </Link>
             </Button>
           </motion.div>
 
