@@ -73,7 +73,7 @@ export function HeroSection() {
             className="mt-12 flex items-center gap-8"
           >
             <div className="text-center">
-              <p className="font-serif text-3xl text-primary-foreground font-medium">50K+</p>
+              <p className="font-serif text-3xl text-primary-foreground font-medium">500+</p>
               <p className="text-sm text-primary-foreground/60">Expecting Mothers</p>
             </div>
             <div className="w-px h-12 bg-primary-foreground/20" />
@@ -83,7 +83,7 @@ export function HeroSection() {
             </div>
             <div className="w-px h-12 bg-primary-foreground/20" />
             <div className="text-center">
-              <p className="font-serif text-3xl text-primary-foreground font-medium">1M+</p>
+              <p className="font-serif text-3xl text-primary-foreground font-medium">1K+</p>
               <p className="text-sm text-primary-foreground/60">Maternity Portraits Created</p>
             </div>
           </motion.div>
