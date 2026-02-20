@@ -1,5 +1,6 @@
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { parseBody } from './lib/parse-body';
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL!;
 const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY!;
@@ -29,7 +30,7 @@ export default async function handler(req: Request) {
   }
 
   try {
-    const body = await req.json();
+    const body = (await parseBody(req)) as Record<string, unknown>;
     const { product_id, product_name, price, customer_email, image_urls } = body;
 
     // Validate required fields
@@ -45,7 +46,7 @@ export default async function handler(req: Request) {
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(customer_email)) {
+    if (!emailRegex.test(String(customer_email))) {
       return new Response(
         JSON.stringify({ error: 'Invalid email address' }),
         {
@@ -79,19 +80,19 @@ export default async function handler(req: Request) {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: product_name,
-              description: `AI-generated maternity portrait product`,
+              name: String(product_name),
+              description: 'AI-generated maternity portrait product',
             },
-            unit_amount: Math.round(price * 100), // Convert to cents
+            unit_amount: Math.round(Number(price) * 100), // Convert to cents
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
-      customer_email,
+      customer_email: String(customer_email),
       metadata: {
-        product_id,
-        product_name,
+        product_id: String(product_id),
+        product_name: String(product_name),
         image_urls: JSON.stringify(image_urls),
       },
       success_url: `${appUrl}/checkout-success?session_id={CHECKOUT_SESSION_ID}`,

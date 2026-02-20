@@ -1,4 +1,7 @@
 import Stripe from 'stripe';
+import { parseBody } from './lib/parse-body';
+
+export const maxDuration = 60;
 
 // Lazy initialization to ensure env vars are loaded
 let stripeInstance: Stripe | null = null;
@@ -17,10 +20,6 @@ function getStripe(): Stripe {
 }
 
 export default async function handler(req: Request) {
-  // #region agent log
-  const tStart = Date.now();
-  console.log('[create-payment-intent] handler start', { tStart });
-  // #endregion
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
@@ -29,7 +28,7 @@ export default async function handler(req: Request) {
   }
 
   try {
-    const body = await req.json();
+    const body = (await parseBody(req)) as Record<string, unknown>;
     const { product_id, product_name, price, customer_email, image_urls } = body;
 
     // Validate required fields
@@ -45,7 +44,7 @@ export default async function handler(req: Request) {
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(customer_email)) {
+    if (!emailRegex.test(String(customer_email))) {
       return new Response(
         JSON.stringify({ error: 'Invalid email address' }),
         {
@@ -67,7 +66,7 @@ export default async function handler(req: Request) {
     }
 
     // Validate price
-    const priceAmount = typeof price === 'number' ? price : parseFloat(price);
+    const priceAmount = typeof price === 'number' ? price : parseFloat(String(price));
     if (isNaN(priceAmount) || priceAmount <= 0) {
       return new Response(
         JSON.stringify({ error: 'Invalid price' }),
@@ -79,31 +78,19 @@ export default async function handler(req: Request) {
     }
 
     // Create Stripe Payment Intent
-    // #region agent log
-    const tPreStripe = Date.now();
-    console.log('[create-payment-intent] before getStripe', { elapsedMs: tPreStripe - tStart });
-    // #endregion
     const stripe = getStripe();
-    // #region agent log
-    const tPreCreate = Date.now();
-    console.log('[create-payment-intent] before paymentIntents.create', { elapsedMs: tPreCreate - tStart });
-    // #endregion
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(priceAmount * 100), // Convert to cents
       currency: 'usd',
       metadata: {
-        product_id,
-        product_name,
-        customer_email,
+        product_id: String(product_id),
+        product_name: String(product_name),
+        customer_email: String(customer_email),
         image_urls: JSON.stringify(image_urls),
       },
-      receipt_email: customer_email,
+      receipt_email: String(customer_email),
     });
 
-    // #region agent log
-    const tEnd = Date.now();
-    console.log('[create-payment-intent] success', { totalMs: tEnd - tStart, stripeMs: tEnd - tPreCreate });
-    // #endregion
     return new Response(
       JSON.stringify({
         client_secret: paymentIntent.client_secret,
@@ -115,10 +102,6 @@ export default async function handler(req: Request) {
       }
     );
   } catch (error) {
-    // #region agent log
-    const tErr = Date.now();
-    console.log('[create-payment-intent] error', { totalMs: tErr - tStart, message: (error as Error)?.message });
-    // #endregion
     console.error('Error creating payment intent:', error);
     return new Response(
       JSON.stringify({

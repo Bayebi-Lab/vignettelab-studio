@@ -143,24 +143,13 @@ export default function Checkout() {
     setIsUploading(true);
 
     try {
-      // #region agent log
-      const t0 = Date.now();
-      fetch('http://127.0.0.1:7248/ingest/b928f722-3abd-49ce-ac2a-fc16349319dd',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'94a86d'},body:JSON.stringify({sessionId:'94a86d',location:'Checkout.tsx:handleStep2Next',message:'Step2 start',data:{phase:'before_upload',t0},timestamp:Date.now(),hypothesisId:'B'})}).catch(()=>{});
-      // #endregion
       // Upload images to Supabase Storage
       const uploadResults = await uploadImages(images);
       const urls = uploadResults.map((result) => result.url);
       setImageUrls(urls);
-      // #region agent log
-      const t1 = Date.now();
-      fetch('http://127.0.0.1:7248/ingest/b928f722-3abd-49ce-ac2a-fc16349319dd',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'94a86d'},body:JSON.stringify({sessionId:'94a86d',location:'Checkout.tsx:handleStep2Next',message:'Upload done',data:{phase:'after_upload',uploadMs:t1-t0,t1},timestamp:Date.now(),hypothesisId:'B'})}).catch(()=>{});
-      // #endregion
-      const apiUrl = `${window.location.origin}/api/create-payment-intent`;
-      // #region agent log
-      fetch('http://127.0.0.1:7248/ingest/b928f722-3abd-49ce-ac2a-fc16349319dd',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'94a86d'},body:JSON.stringify({sessionId:'94a86d',location:'Checkout.tsx:handleStep2Next',message:'Before create-payment-intent fetch',data:{phase:'before_fetch',apiUrl,t1},timestamp:Date.now(),hypothesisId:'C'})}).catch(()=>{});
-      // #endregion
+
       // Create payment intent
-      const response = await fetch(apiUrl, {
+      const response = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -187,17 +176,10 @@ export default function Checkout() {
       }
 
       const { client_secret, payment_intent_id } = await response.json();
-      // #region agent log
-      const t2 = Date.now();
-      fetch('http://127.0.0.1:7248/ingest/b928f722-3abd-49ce-ac2a-fc16349319dd',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'94a86d'},body:JSON.stringify({sessionId:'94a86d',location:'Checkout.tsx:handleStep2Next',message:'Fetch success',data:{phase:'fetch_done',totalMs:t2-t0,status:response.status},timestamp:Date.now(),hypothesisId:'A,D'})}).catch(()=>{});
-      // #endregion
       setClientSecret(client_secret);
       setPaymentIntentId(payment_intent_id);
       setCurrentStep(3);
     } catch (error) {
-      // #region agent log
-      fetch('http://127.0.0.1:7248/ingest/b928f722-3abd-49ce-ac2a-fc16349319dd',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'94a86d'},body:JSON.stringify({sessionId:'94a86d',location:'Checkout.tsx:handleStep2Next',message:'Fetch failed',data:{phase:'catch',errorName:(error as Error)?.name,errorMsg:(error as Error)?.message,isTimeout:(error as Error)?.name==='AbortError'},timestamp:Date.now(),hypothesisId:'A,B,C,D'})}).catch(()=>{});
-      // #endregion
       console.error('Error uploading images:', error);
       toast.error(
         error instanceof Error ? error.message : 'Something went wrong. Please try again.'

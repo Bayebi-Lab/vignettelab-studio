@@ -1,5 +1,6 @@
 import Stripe from 'stripe';
 import { Resend } from 'resend';
+import { parseBody } from './lib/parse-body';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL!;
@@ -41,7 +42,7 @@ export default async function handler(req: Request) {
   }
 
   try {
-    const body = await req.json();
+    const body = (await parseBody(req)) as Record<string, unknown>;
     const { payment_intent_id, product_id, product_name, price, customer_email, image_urls } = body;
 
     // Validate required fields (product_id optional for backward compat)
@@ -57,7 +58,7 @@ export default async function handler(req: Request) {
 
     // Verify payment intent status
     const stripe = getStripe();
-    const paymentIntent = await stripe.paymentIntents.retrieve(payment_intent_id);
+    const paymentIntent = await stripe.paymentIntents.retrieve(String(payment_intent_id));
     
     if (paymentIntent.status !== 'succeeded') {
       return new Response(
@@ -70,21 +71,22 @@ export default async function handler(req: Request) {
     }
 
     const supabase = createServerClient();
-    const imageUrlsArray = Array.isArray(image_urls) ? image_urls : JSON.parse(image_urls);
+    const imageUrlsArray = Array.isArray(image_urls) ? image_urls : JSON.parse(String(image_urls));
 
     // Create order in database
-    const productIdUuid = product_id && product_id.length === 36 ? product_id : null;
+    const productIdStr = String(product_id ?? '');
+    const productIdUuid = productIdStr.length === 36 ? productIdStr : null;
 
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert({
         customer_email,
         package_id: null,
-        package_name: product_name, // Keep column name for backward compat
+        package_name: String(product_name), // Keep column name for backward compat
         product_id: productIdUuid,
-        price: typeof price === 'number' ? price : parseFloat(price),
+        price: typeof price === 'number' ? price : parseFloat(String(price)),
         status: 'processing',
-        stripe_payment_intent_id: payment_intent_id,
+        stripe_payment_intent_id: String(payment_intent_id),
         stripe_checkout_session_id: null,
       })
       .select()
@@ -117,7 +119,7 @@ export default async function handler(req: Request) {
       try {
         await resend.emails.send({
           from: process.env.ADMIN_EMAIL || 'noreply@vignettelab.com',
-          to: customer_email,
+          to: String(customer_email),
           subject: 'Order Confirmed - VignetteLab Studio',
           html: `
             <!DOCTYPE html>

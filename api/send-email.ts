@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { parseBody } from './lib/parse-body';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -11,7 +12,7 @@ export default async function handler(req: Request) {
   }
 
   try {
-    const body = await req.json();
+    const body = (await parseBody(req)) as Record<string, unknown>;
     const { to, subject, template_type, data } = body;
 
     if (!to || !subject || !template_type) {
@@ -27,7 +28,11 @@ export default async function handler(req: Request) {
     let html = '';
 
     if (template_type === 'download_ready') {
-      const { orderId, packageName, downloadLinks } = data;
+      const { orderId, packageName, downloadLinks } = (data ?? {}) as {
+        orderId: string;
+        packageName: string;
+        downloadLinks: string[];
+      };
       html = `
         <!DOCTYPE html>
         <html>
@@ -62,13 +67,13 @@ export default async function handler(req: Request) {
         </html>
       `;
     } else {
-      html = data?.html || '<p>No content provided</p>';
+      html = (data as { html?: string })?.html ?? '<p>No content provided</p>';
     }
 
     const result = await resend.emails.send({
       from: process.env.ADMIN_EMAIL || 'noreply@vignettelab.com',
-      to,
-      subject,
+      to: String(to),
+      subject: String(subject),
       html,
     });
 

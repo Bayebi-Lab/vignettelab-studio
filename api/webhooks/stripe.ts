@@ -1,5 +1,6 @@
 import Stripe from 'stripe';
 import { Resend } from 'resend';
+import { getRawBody, getHeader } from '../lib/parse-body';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL!;
@@ -40,7 +41,7 @@ export default async function handler(req: Request) {
     });
   }
 
-  const signature = req.headers.get('stripe-signature');
+  const signature = getHeader(req, 'stripe-signature');
   if (!signature) {
     return new Response(JSON.stringify({ error: 'No signature' }), {
       status: 400,
@@ -48,7 +49,7 @@ export default async function handler(req: Request) {
     });
   }
 
-  const body = await req.text();
+  const body = await getRawBody(req);
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!webhookSecret) {
