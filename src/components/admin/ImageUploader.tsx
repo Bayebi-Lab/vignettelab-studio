@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -11,6 +11,7 @@ interface ImageUploaderProps {
 export function ImageUploader({ onImagesChange, maxImages = 50 }: ImageUploaderProps) {
   const [images, setImages] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
@@ -68,6 +69,7 @@ export function ImageUploader({ onImagesChange, maxImages = 50 }: ImageUploaderP
         )}
       >
         <input
+          ref={inputRef}
           type="file"
           id="final-image-upload"
           multiple
@@ -97,7 +99,15 @@ export function ImageUploader({ onImagesChange, maxImages = 50 }: ImageUploaderP
             </p>
           </div>
           {images.length < maxImages && (
-            <Button type="button" variant="outline" size="sm">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={(e) => {
+                e.preventDefault();
+                inputRef.current?.click();
+              }}
+            >
               Select Images
             </Button>
           )}

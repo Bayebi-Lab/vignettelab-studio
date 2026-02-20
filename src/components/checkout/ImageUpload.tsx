@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -23,6 +23,7 @@ export function ImageUpload({
 }: ImageUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [fileError, setFileError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const validateFile = (file: File): string | null => {
     if (!file.type.startsWith('image/')) {
@@ -135,6 +136,7 @@ export function ImageUpload({
         )}
       >
         <input
+          ref={inputRef}
           type="file"
           id="image-upload"
           multiple
@@ -164,7 +166,15 @@ export function ImageUpload({
             </p>
           </div>
           {images.length < maxImages && (
-            <Button type="button" variant="outline" size="sm">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={(e) => {
+                e.preventDefault();
+                inputRef.current?.click();
+              }}
+            >
               Select Images
             </Button>
           )}
