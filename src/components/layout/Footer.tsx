@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Instagram, Facebook, Twitter, Mail, Heart } from "lucide-react";
+import { Instagram, Heart } from "lucide-react";
 
 const footerLinks = {
   explore: [
@@ -18,10 +18,7 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Instagram, href: "https://www.instagram.com/vignettelabstudio", label: "Instagram" },
-  { icon: Facebook, href: "#", label: "Facebook" },
-  { icon: Twitter, href: "#", label: "Twitter" },
-  { icon: Mail, href: "mailto:hello@vignettelab.com", label: "Email" },
+  { icon: Instagram, href: "https://www.instagram.com/vignettelabstudio?igsh=bjhtdzlrZXg1eGhv", label: "Instagram" },
 ];
 
 export function Footer() {
