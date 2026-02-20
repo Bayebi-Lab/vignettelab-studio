@@ -17,6 +17,10 @@ function getStripe(): Stripe {
 }
 
 export default async function handler(req: Request) {
+  // #region agent log
+  const tStart = Date.now();
+  console.log('[create-payment-intent] handler start', { tStart });
+  // #endregion
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
@@ -75,7 +79,15 @@ export default async function handler(req: Request) {
     }
 
     // Create Stripe Payment Intent
+    // #region agent log
+    const tPreStripe = Date.now();
+    console.log('[create-payment-intent] before getStripe', { elapsedMs: tPreStripe - tStart });
+    // #endregion
     const stripe = getStripe();
+    // #region agent log
+    const tPreCreate = Date.now();
+    console.log('[create-payment-intent] before paymentIntents.create', { elapsedMs: tPreCreate - tStart });
+    // #endregion
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(priceAmount * 100), // Convert to cents
       currency: 'usd',
@@ -88,6 +100,10 @@ export default async function handler(req: Request) {
       receipt_email: customer_email,
     });
 
+    // #region agent log
+    const tEnd = Date.now();
+    console.log('[create-payment-intent] success', { totalMs: tEnd - tStart, stripeMs: tEnd - tPreCreate });
+    // #endregion
     return new Response(
       JSON.stringify({
         client_secret: paymentIntent.client_secret,
@@ -99,6 +115,10 @@ export default async function handler(req: Request) {
       }
     );
   } catch (error) {
+    // #region agent log
+    const tErr = Date.now();
+    console.log('[create-payment-intent] error', { totalMs: tErr - tStart, message: (error as Error)?.message });
+    // #endregion
     console.error('Error creating payment intent:', error);
     return new Response(
       JSON.stringify({
