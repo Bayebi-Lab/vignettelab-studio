@@ -4,7 +4,8 @@
   "functions": {
     "api/create-payment-intent.ts": {
       "maxDuration": 60,
-      "memory": 1024
+      "memory": 1024,
+      "regions": ["sfo1"]
     }
   },
   "rewrites": [

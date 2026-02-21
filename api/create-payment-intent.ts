@@ -18,12 +18,13 @@ function getStripe(): Stripe {
     }
     stripeInstance = new Stripe(stripeSecretKey, {
       apiVersion: '2026-01-28.clover',
+      timeout: 30000, // 30s - fail fast instead of hanging to Vercel's 60s limit
     });
   }
   return stripeInstance;
 }
 
-export default async function handler(req: Request) {
+async function handleRequest(req: Request): Promise<Response> {
   console.log('[create-payment-intent] invoked', req.method);
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
@@ -83,6 +84,7 @@ export default async function handler(req: Request) {
     }
 
     // Create Stripe Payment Intent
+    console.log('[create-payment-intent] calling Stripe API');
     const stripe = getStripe();
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(priceAmount * 100), // Convert to cents
@@ -119,4 +121,21 @@ export default async function handler(req: Request) {
       }
     );
   }
+}
+
+export default async function handler(req: Request): Promise<Response> {
+  const TIMEOUT_MS = 55000; // Return before Vercel 60s kill
+  const timeoutPromise = new Promise<Response>((_, reject) =>
+    setTimeout(() => reject(new Error('Request timed out')), TIMEOUT_MS)
+  );
+  return Promise.race([handleRequest(req), timeoutPromise]).catch((err) => {
+    console.error('[create-payment-intent] timeout or error:', err);
+    return new Response(
+      JSON.stringify({
+        error: 'Request timed out',
+        message: 'The payment service did not respond in time. Please try again.',
+      }),
+      { status: 504, headers: { 'Content-Type': 'application/json' } }
+    );
+  });
 }
