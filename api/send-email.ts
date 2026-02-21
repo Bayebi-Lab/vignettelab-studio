@@ -1,5 +1,5 @@
 import { Resend } from 'resend';
-import { parseBody } from './lib/parse-body';
+import { parseBody } from './lib/parse-body.js';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

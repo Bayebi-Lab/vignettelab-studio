@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { Resend } from 'resend';
-import { getRawBody, getHeader } from '../lib/parse-body';
+import { getRawBody, getHeader } from '../lib/parse-body.js';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL!;

@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import { parseBody } from './lib/parse-body';
+import { parseBody } from './lib/parse-body.js';
 
 export const maxDuration = 60;
 

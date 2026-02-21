@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
-import { parseBody } from './lib/parse-body';
+import { parseBody } from './lib/parse-body.js';
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL!;
 const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY!;
