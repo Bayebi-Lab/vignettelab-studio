@@ -24,6 +24,7 @@ function getStripe(): Stripe {
 }
 
 export default async function handler(req: Request) {
+  console.log('[create-payment-intent] invoked', req.method);
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
