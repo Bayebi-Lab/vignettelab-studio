@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import {
   Accordion,
@@ -15,11 +16,11 @@ const faqs = [
     questions: [
       {
         q: "How does VignetteLab work?",
-        a: "VignetteLab uses advanced AI technology to transform your pregnancy photos into stunning studio-quality maternity portraits. Simply upload 1-3 photos showing your beautiful bump (max 10MB each), choose your preferred style, and our AI creates beautiful maternity portraits with professional lighting and composition.",
+        a: "VignetteLab uses advanced AI technology to transform your pregnancy photos into stunning studio-quality maternity portraits. Simply upload 2-10 photos showing your beautiful bump (max 10MB each), choose your preferred style, and our AI creates beautiful maternity portraits with professional lighting and composition.",
       },
       {
         q: "What kind of photos should I upload?",
-        a: "Upload photos showing your beautiful bump. Clear, well-lit photos where your face and bump are visible work best. Selfies, casual snapshots, and any images where you love how you look work great. We recommend including different angles to showcase your pregnancy glow.",
+        a: "Upload high-quality, well-lit photos of yourself, including clear close-up headshots and full-body shots that show off your beautiful bump and any unique traits like tattoos or birthmarks. To help us bring your vision to life, feel free to include inspiration images of the specific styles, outfits, and poses you love most!",
       },
       {
         q: "How long does it take to receive my portraits?",
@@ -40,7 +41,7 @@ const faqs = [
       },
       {
         q: "What resolution are the final images?",
-        a: "Resolution depends on your product. Essential Glow receives standard resolution suitable for digital sharing, Glow Package includes high resolution for quality prints up to 8x10, and Complete Collection delivers ultra-high resolution for large prints and professional use.",
+        a: "Every Package delivers high resolution for large prints and professional use.",
       },
     ],
   },
@@ -165,8 +166,8 @@ const FAQ = () => {
             <p className="text-muted-foreground mb-8 max-w-md mx-auto">
               Our friendly support team is here to help. Reach out and we'll get back to you within 24 hours.
             </p>
-            <Button variant="hero" size="lg">
-              Contact Support
+            <Button variant="hero" size="lg" asChild>
+              <Link to="/contact">Contact Support</Link>
             </Button>
           </motion.div>
         </div>

@@ -47,6 +47,49 @@ app.get('/health', (c) => {
 });
 
 // ---------------------------------------------------------------------------
+// GET /api/instagram-media
+// ---------------------------------------------------------------------------
+
+app.get('/instagram-media', async (c) => {
+  const token = process.env.INSTAGRAM_ACCESS_TOKEN;
+  if (!token) {
+    return c.json({ media: [] });
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+    const res = await fetch(
+      `https://graph.instagram.com/me/media?fields=id,caption,media_url,permalink,thumbnail_url&access_token=${encodeURIComponent(token)}`,
+      { signal: controller.signal },
+    );
+
+    clearTimeout(timeoutId);
+
+    const data = (await res.json()) as {
+      data?: Array<{ id: string; caption?: string; media_url?: string; permalink?: string; thumbnail_url?: string }>;
+      error?: { message: string; code: number };
+    };
+
+    if (!res.ok || data.error) {
+      console.error('[instagram-media] API error:', data.error ?? res.statusText);
+      return c.json({ media: [] });
+    }
+
+    const media = (data.data ?? []).slice(0, 12);
+    return c.json({ media });
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      console.error('[instagram-media] Request timeout');
+    } else {
+      console.error('[instagram-media] Error:', err);
+    }
+    return c.json({ media: [] });
+  }
+});
+
+// ---------------------------------------------------------------------------
 // POST /api/create-payment-intent  (raw fetch to Stripe – no SDK)
 // ---------------------------------------------------------------------------
 
@@ -60,7 +103,7 @@ app.post('/create-payment-intent', async (c) => {
 
   try {
     const body = await c.req.json<Record<string, unknown>>();
-    const { product_id, product_name, price, customer_email, image_urls } = body;
+    const { product_id, product_name, price, customer_email, customer_name, pregnancy_week, image_urls } = body;
 
     if (!product_id || !product_name || !price || !customer_email || !image_urls) {
       return c.json({ error: 'Missing required fields' }, 400);
@@ -71,8 +114,8 @@ app.post('/create-payment-intent', async (c) => {
       return c.json({ error: 'Invalid email address' }, 400);
     }
 
-    if (!Array.isArray(image_urls) || image_urls.length < 1 || image_urls.length > 3) {
-      return c.json({ error: 'Please upload between 1 and 3 images' }, 400);
+    if (!Array.isArray(image_urls) || image_urls.length < 2 || image_urls.length > 10) {
+      return c.json({ error: 'Please upload between 2 and 10 images' }, 400);
     }
 
     const priceAmount = typeof price === 'number' ? price : parseFloat(String(price));
@@ -84,14 +127,20 @@ app.post('/create-payment-intent', async (c) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 25000);
 
+    const metadata: Record<string, string> = {
+      product_id: String(product_id),
+      product_name: String(product_name),
+      customer_email: String(customer_email),
+      image_urls: JSON.stringify(image_urls),
+    };
+    if (customer_name) metadata.customer_name = String(customer_name);
+    if (pregnancy_week != null && pregnancy_week !== '') metadata.pregnancy_week = String(pregnancy_week);
+
     const formBody = new URLSearchParams({
       amount: String(Math.round(priceAmount * 100)),
       currency: 'usd',
-      'metadata[product_id]': String(product_id),
-      'metadata[product_name]': String(product_name),
-      'metadata[customer_email]': String(customer_email),
-      'metadata[image_urls]': JSON.stringify(image_urls),
       receipt_email: String(customer_email),
+      ...Object.fromEntries(Object.entries(metadata).map(([k, v]) => [`metadata[${k}]`, v])),
     });
 
     const stripeRes = await fetch('https://api.stripe.com/v1/payment_intents', {
@@ -145,7 +194,7 @@ app.post('/create-payment-intent', async (c) => {
 app.post('/confirm-payment', async (c) => {
   try {
     const body = await c.req.json<Record<string, unknown>>();
-    const { payment_intent_id, product_id, product_name, price, customer_email, image_urls } = body;
+    const { payment_intent_id, product_id, product_name, price, customer_email, customer_name, pregnancy_week, image_urls } = body;
 
     if (!payment_intent_id || !product_name || !price || !customer_email || !image_urls) {
       return c.json({ error: 'Missing required fields' }, 400);
@@ -164,18 +213,25 @@ app.post('/confirm-payment', async (c) => {
     const productIdStr = String(product_id ?? '');
     const productIdUuid = productIdStr.length === 36 ? productIdStr : null;
 
+    const orderInsert: Record<string, unknown> = {
+      customer_email,
+      package_id: null,
+      package_name: String(product_name),
+      product_id: productIdUuid,
+      price: typeof price === 'number' ? price : parseFloat(String(price)),
+      status: 'processing',
+      stripe_payment_intent_id: String(payment_intent_id),
+      stripe_checkout_session_id: null,
+    };
+    if (customer_name) orderInsert.customer_name = String(customer_name);
+    if (pregnancy_week != null && pregnancy_week !== '') {
+      const week = typeof pregnancy_week === 'number' ? pregnancy_week : parseInt(String(pregnancy_week), 10);
+      if (!isNaN(week)) orderInsert.pregnancy_week = week;
+    }
+
     const { data: order, error: orderError } = await supabase
       .from('orders')
-      .insert({
-        customer_email,
-        package_id: null,
-        package_name: String(product_name),
-        product_id: productIdUuid,
-        price: typeof price === 'number' ? price : parseFloat(String(price)),
-        status: 'processing',
-        stripe_payment_intent_id: String(payment_intent_id),
-        stripe_checkout_session_id: null,
-      })
+      .insert(orderInsert)
       .select()
       .single();
 
@@ -196,9 +252,10 @@ app.post('/confirm-payment', async (c) => {
       }
     }
 
-    if (customer_email) {
+        if (customer_email) {
       try {
         const resend = getResend();
+        const greeting = customer_name ? `Hi ${escapeHtml(String(customer_name))},` : 'Hi there,';
         await resend.emails.send({
           from: adminFrom(),
           to: String(customer_email),
@@ -209,6 +266,7 @@ app.post('/confirm-payment', async (c) => {
               <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
               <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
                 <h1 style="color: #8B4513;">Order Confirmed!</h1>
+                <p>${greeting}</p>
                 <p>Thank you for your order. We've received your payment and will start processing your portraits shortly.</p>
                 <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
                   <h2 style="margin-top: 0;">Order Details</h2>
@@ -301,6 +359,66 @@ app.post('/create-checkout-session', async (c) => {
     );
   }
 });
+
+// ---------------------------------------------------------------------------
+// POST /api/contact (contact form)
+// ---------------------------------------------------------------------------
+
+app.post('/contact', async (c) => {
+  try {
+    const body = await c.req.json<{ name?: string; email?: string; subject?: string; message?: string }>();
+    const { name, email, subject, message } = body;
+
+    if (!name || !email || !subject || !message) {
+      return c.json({ error: 'Missing required fields: name, email, subject, message' }, 400);
+    }
+
+    const adminEmail = adminFrom();
+    if (!adminEmail || adminEmail === 'noreply@vignettelab.com') {
+      return c.json({ error: 'Contact form is not configured' }, 503);
+    }
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h1 style="color: #8B4513;">Contact Form Submission</h1>
+          <p><strong>From:</strong> ${escapeHtml(name)} &lt;${escapeHtml(email)}&gt;</p>
+          <p><strong>Subject:</strong> ${escapeHtml(subject)}</p>
+          <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+          <h2 style="font-size: 16px; margin-top: 0;">Message</h2>
+          <p style="white-space: pre-wrap;">${escapeHtml(message)}</p>
+        </body>
+      </html>
+    `;
+
+    const resend = getResend();
+    await resend.emails.send({
+      from: adminEmail,
+      replyTo: email,
+      to: adminEmail,
+      subject: `[VignetteLab Contact] ${subject}`,
+      html,
+    });
+
+    return c.json({ success: true });
+  } catch (error) {
+    console.error('Error processing contact form:', error);
+    return c.json(
+      { error: 'Failed to send message', message: error instanceof Error ? error.message : 'Unknown error' },
+      500,
+    );
+  }
+});
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 
 // ---------------------------------------------------------------------------
 // POST /api/send-email
