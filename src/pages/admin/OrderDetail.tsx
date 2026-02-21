@@ -15,6 +15,8 @@ import { toast } from 'sonner';
 interface Order {
   id: string;
   customer_email: string;
+  customer_name?: string | null;
+  pregnancy_week?: number | null;
   package_name: string;
   price: number;
   status: 'pending' | 'processing' | 'completed' | 'cancelled';
@@ -228,6 +230,13 @@ export default function OrderDetail() {
                       <p className="font-mono text-sm">{order.id}</p>
                     </div>
 
+                    {order.customer_name && (
+                      <div>
+                        <p className="text-sm text-muted-foreground">Customer Name</p>
+                        <p className="font-medium">{order.customer_name}</p>
+                      </div>
+                    )}
+
                     <div>
                       <p className="text-sm text-muted-foreground flex items-center gap-2">
                         <Mail size={14} />
@@ -235,6 +244,13 @@ export default function OrderDetail() {
                       </p>
                       <p className="font-medium">{order.customer_email}</p>
                     </div>
+
+                    {order.pregnancy_week != null && (
+                      <div>
+                        <p className="text-sm text-muted-foreground">Pregnancy Week</p>
+                        <p className="font-medium">Week {order.pregnancy_week}</p>
+                      </div>
+                    )}
 
                     <div>
                       <p className="text-sm text-muted-foreground flex items-center gap-2">

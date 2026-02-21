@@ -13,6 +13,8 @@ interface PaymentFormProps {
   productName: string;
   price: number;
   customerEmail: string;
+  customerName?: string;
+  pregnancyWeek?: number;
   imageUrls: string[];
   productId: string;
   paymentIntentId: string;
@@ -24,6 +26,8 @@ export function PaymentForm({
   productName,
   price,
   customerEmail,
+  customerName,
+  pregnancyWeek,
   imageUrls,
   productId,
   paymentIntentId,
@@ -73,6 +77,8 @@ export function PaymentForm({
             product_name: productName,
             price,
             customer_email: customerEmail,
+            ...(customerName && { customer_name: customerName }),
+            ...(pregnancyWeek != null && pregnancyWeek !== undefined && { pregnancy_week: pregnancyWeek }),
             image_urls: imageUrls,
           }),
         });

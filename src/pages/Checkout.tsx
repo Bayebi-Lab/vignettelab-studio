@@ -23,9 +23,15 @@ import { uploadImages } from '@/lib/storage';
 import { toast } from 'sonner';
 import { stripePromise } from '@/lib/stripe';
 import { useProducts, type Product } from '@/hooks/useProducts';
+import { filterPackageFeatures } from '@/lib/utils';
 
 const checkoutSchema = z.object({
+  name: z.string().min(2, 'Please enter your name'),
   email: z.string().email('Please enter a valid email address'),
+  pregnancyWeek: z
+    .number({ invalid_type_error: 'Please enter your pregnancy week' })
+    .min(1, 'Week must be at least 1')
+    .max(42, 'Week must be 42 or less'),
 });
 
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
@@ -51,7 +57,9 @@ export default function Checkout() {
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
+      name: '',
       email: '',
+      pregnancyWeek: undefined as unknown as number,
     },
   });
 
@@ -130,13 +138,13 @@ export default function Checkout() {
   const totalPrice = selectedProduct.price * quantity;
 
   const handleStep2Next = async (values: CheckoutFormValues) => {
-    if (images.length < 1) {
-      toast.error('Please upload at least 1 image');
+    if (images.length < 2) {
+      toast.error('Please upload at least 2 images');
       return;
     }
 
-    if (images.length > 3) {
-      toast.error('Maximum 3 images allowed');
+    if (images.length > 10) {
+      toast.error('Maximum 10 images allowed');
       return;
     }
 
@@ -162,6 +170,8 @@ export default function Checkout() {
           price: totalPrice,
           quantity,
           customer_email: values.email,
+          customer_name: values.name,
+          pregnancy_week: values.pregnancyWeek,
           image_urls: urls,
         }),
         signal: controller.signal,
@@ -324,7 +334,7 @@ export default function Checkout() {
                             </div>
                           </div>
                           <ul className="space-y-2">
-                            {product.features.slice(0, 3).map((feature) => (
+                            {filterPackageFeatures(product.features).slice(0, 3).map((feature) => (
                               <li key={feature} className="flex items-start gap-2 text-sm">
                                 <Check size={16} className="text-primary mt-0.5 flex-shrink-0" />
                                 <span>{feature}</span>
@@ -356,7 +366,7 @@ export default function Checkout() {
                     <div>
                       <h2 className="font-serif text-2xl mb-2">Upload Your Photos</h2>
                       <p className="text-muted-foreground">
-                        Upload 1-3 photos showing your beautiful bump to get started with {selectedProduct.name}.
+                        Upload 2-10 high-resolution photos (close-ups, full-body, and traits like tattoos) plus inspiration images for your desired style, outfit, and pose.
                       </p>
                     </div>
 
@@ -382,6 +392,22 @@ export default function Checkout() {
                       >
                         <FormField
                           control={form.control}
+                          name="name"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Full Name</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="Your name"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
                           name="email"
                           render={({ field }) => (
                             <FormItem>
@@ -400,13 +426,39 @@ export default function Checkout() {
                             </FormItem>
                           )}
                         />
+                        <FormField
+                          control={form.control}
+                          name="pregnancyWeek"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Pregnancy Week</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  min={1}
+                                  max={42}
+                                  placeholder="e.g. 28"
+                                  value={field.value ?? ''}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    field.onChange(val === '' ? undefined : parseInt(val, 10));
+                                  }}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                              <p className="text-xs text-muted-foreground">
+                                How many weeks pregnant are you? (1–42)
+                              </p>
+                            </FormItem>
+                          )}
+                        />
 
                         <div>
                           <ImageUpload
                             images={images}
                             onImagesChange={setImages}
-                            maxImages={3}
-                            minImages={1}
+                            maxImages={10}
+                            minImages={2}
                           />
                         </div>
 
@@ -423,7 +475,7 @@ export default function Checkout() {
                             type="submit"
                             size="lg"
                             className="flex-1"
-                            disabled={isUploading || images.length < 1}
+                            disabled={isUploading || images.length < 2}
                           >
                             {isUploading ? (
                               <>Uploading...</>
@@ -471,6 +523,8 @@ export default function Checkout() {
                         productName={selectedProduct.name}
                         price={totalPrice}
                         customerEmail={form.getValues('email')}
+                        customerName={form.getValues('name') || undefined}
+                        pregnancyWeek={form.getValues('pregnancyWeek') ?? undefined}
                         imageUrls={imageUrls}
                         productId={selectedProduct.id}
                         paymentIntentId={paymentIntentId}

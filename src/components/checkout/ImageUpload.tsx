@@ -17,8 +17,8 @@ const MAX_FILE_SIZE_MB = 10; // 10MB per image
 export function ImageUpload({
   images,
   onImagesChange,
-  maxImages = 3,
-  minImages = 1,
+  maxImages = 10,
+  minImages = 2,
   maxFileSizeMB = MAX_FILE_SIZE_MB,
 }: ImageUploadProps) {
   const [isDragging, setIsDragging] = useState(false);
@@ -162,7 +162,7 @@ export function ImageUpload({
                 : 'Drag & drop images here, or click to select'}
             </p>
             <p className="text-xs text-muted-foreground">
-              Upload {minImages}-{maxImages} photos showing your beautiful bump (JPG, PNG, WEBP, max {maxFileSizeMB}MB each)
+              {minImages}-{maxImages} high-resolution photos: close-ups, full-body, traits (e.g. tattoos), plus inspiration images (JPG, PNG, WEBP, max {maxFileSizeMB}MB each)
             </p>
           </div>
           {images.length < maxImages && (
