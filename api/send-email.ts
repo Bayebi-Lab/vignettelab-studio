@@ -1,5 +1,9 @@
 import { Resend } from 'resend';
-import { parseBody } from './lib/parse-body.js';
+
+async function parseBody(req: Request): Promise<unknown> {
+  if (typeof req.json === 'function') return req.json();
+  return {};
+}
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

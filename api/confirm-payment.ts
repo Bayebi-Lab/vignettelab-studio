@@ -1,7 +1,11 @@
 import Stripe from 'stripe';
 import { Resend } from 'resend';
-import { parseBody } from './lib/parse-body.js';
 import { createClient } from '@supabase/supabase-js';
+
+async function parseBody(req: Request): Promise<unknown> {
+  if (typeof req.json === 'function') return req.json();
+  return {};
+}
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL!;
 const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY!;

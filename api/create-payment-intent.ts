@@ -1,7 +1,11 @@
 import Stripe from 'stripe';
-import { parseBody } from './lib/parse-body.js';
 
 export const maxDuration = 60;
+
+async function parseBody(req: Request): Promise<unknown> {
+  if (typeof req.json === 'function') return req.json();
+  return {};
+}
 
 // Lazy initialization to ensure env vars are loaded
 let stripeInstance: Stripe | null = null;

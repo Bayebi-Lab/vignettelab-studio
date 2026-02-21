@@ -148,7 +148,9 @@ export default function Checkout() {
       const urls = uploadResults.map((result) => result.url);
       setImageUrls(urls);
 
-      // Create payment intent
+      // Create payment intent (30s timeout to avoid indefinite pending)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
       const response = await fetch('/api/create-payment-intent', {
         method: 'POST',
         headers: {
@@ -162,7 +164,9 @@ export default function Checkout() {
           customer_email: values.email,
           image_urls: urls,
         }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         let errorMessage = 'Failed to create payment intent';
@@ -181,9 +185,11 @@ export default function Checkout() {
       setCurrentStep(3);
     } catch (error) {
       console.error('Error uploading images:', error);
-      toast.error(
-        error instanceof Error ? error.message : 'Something went wrong. Please try again.'
-      );
+      const message =
+        error instanceof Error && error.name === 'AbortError'
+          ? 'Request timed out. Please check your connection and try again.'
+          : error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+      toast.error(message);
     } finally {
       setIsUploading(false);
     }

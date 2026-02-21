@@ -1,7 +1,15 @@
 import Stripe from 'stripe';
 import { Resend } from 'resend';
-import { getRawBody, getHeader } from '../lib/parse-body.js';
 import { createClient } from '@supabase/supabase-js';
+
+async function getRawBody(req: Request): Promise<string> {
+  if (typeof req.text === 'function') return req.text();
+  return '';
+}
+
+function getHeader(req: Request, name: string): string | null {
+  return req.headers?.get?.(name) ?? null;
+}
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL!;
 const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY!;
