@@ -39,8 +39,8 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="font-serif text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-primary-foreground leading-tight mb-6"
           >
-            Beautiful Bump Photos{" "}
-            <span className="italic text-rose-gold-light">Without Leaving Home</span>
+            Stunning Maternity Portraits,{" "}
+            <span className="italic text-rose-gold-light">Right From Home</span>
           </motion.h1>
 
           <motion.p
@@ -49,8 +49,7 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl text-primary-foreground/80 leading-relaxed mb-8 max-w-xl"
           >
-            Transform your pregnancy photos into stunning studio-quality maternity portraits. 
-            Capture your pregnancy glow effortlessly from the comfort of your home.
+            Celebrate your pregnancy glow with studio-quality portraits, effortlessly created from your photos and delivered in 24 hours or less.
           </motion.p>
 
           <motion.div
@@ -60,7 +59,7 @@ export function HeroSection() {
           >
             <Button variant="hero" size="xl" className="group" asChild>
               <Link to="/shop">
-                Discover Your Glow
+                Start Your Portraits
                 <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>

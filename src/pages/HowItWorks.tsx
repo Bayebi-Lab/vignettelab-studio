@@ -84,7 +84,7 @@ const HowItWorks = () => {
             </p>
             <Button variant="hero" size="xl" className="group" asChild>
               <Link to="/shop">
-                Discover Your Glow
+                Start Your Portraits
                 <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
@@ -171,7 +171,7 @@ const HowItWorks = () => {
               asChild
             >
               <Link to="/shop">
-                Discover Your Glow
+                Start Your Portraits
               </Link>
             </Button>
           </motion.div>

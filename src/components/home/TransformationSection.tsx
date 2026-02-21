@@ -11,22 +11,22 @@ const transformations = [
     id: 1,
     before: before2,
     after: after2,
-    category: "Maternity Portrait",
-    description: "Everyday pregnancy photo transformed into elegant studio portrait",
+    category: "Classic Elegance",
+    description: "One of 3 stunning styles in every package — soft, natural lighting for timeless portraits",
   },
   {
     id: 2,
     before: before2,
     after: after2,
-    category: "Maternity Glow",
-    description: "Casual bump photo elevated to timeless artwork",
+    category: "Radiant Glow",
+    description: "Studio-quality warmth that celebrates your pregnancy glow in every package",
   },
   {
     id: 3,
     before: before2,
     after: after2,
-    category: "Maternity Session",
-    description: "Simple snapshot refined into beautiful maternity portrait",
+    category: "Artistic Portrait",
+    description: "Bold, creative portraits — from Timeless Glow to Eternal Moments",
   },
 ];
 
@@ -45,10 +45,10 @@ export function TransformationSection() {
             See The Difference
           </span>
           <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground mb-4">
-            From Pregnancy Photo to Maternity Portrait
+            Every Package, 3 Stunning Styles
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Watch everyday pregnancy photos transform into stunning maternity portraits with our AI-powered studio enhancement.
+            Whether you choose Timeless Glow, Radiance Collection, or Eternal Moments, your photos transform into studio-quality maternity portraits in three distinct styles.
           </p>
         </motion.div>
 

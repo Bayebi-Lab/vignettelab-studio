@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/carousel";
 import { Loader2, Share2, ChevronLeft, Check, Download } from "lucide-react";
 import { useProduct } from "@/hooks/useProducts";
+import { filterPackageFeatures } from "@/lib/utils";
 import maternityImg from "@/assets/category-maternity.jpg";
 
 const ProductDetail = () => {
@@ -129,10 +130,7 @@ const ProductDetail = () => {
 
             {/* Product Info */}
             <div>
-              <span className="text-primary text-sm font-medium uppercase tracking-wider">
-                {product.category}
-              </span>
-              <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground mt-2 mb-4">
+              <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground mb-4">
                 {product.name}
               </h1>
 
@@ -156,11 +154,11 @@ const ProductDetail = () => {
                   className="w-full sm:w-auto h-12 font-semibold px-8"
                   onClick={handleChoosePortrait}
                 >
-                  Choose This Portrait — ${product.price.toFixed(2)}
+                  Choose This Package — ${product.price.toFixed(2)}
                 </Button>
                 <p className="text-sm text-muted-foreground mt-3 flex items-center gap-2">
                   <Download size={14} />
-                  Digital delivery within 24 hours. One portrait experience per session.
+                  Digital delivery within 24 hours
                 </p>
               </div>
 
@@ -173,7 +171,7 @@ const ProductDetail = () => {
                   Why this is a unique experience:
                 </p>
                 <ul className="space-y-2 mb-0">
-                  {product.features.map((feature) => (
+                  {filterPackageFeatures(product.features).map((feature) => (
                     <li key={feature} className="flex items-start gap-2">
                       <Check size={18} className="text-primary mt-0.5 flex-shrink-0" />
                       <span>{feature}</span>

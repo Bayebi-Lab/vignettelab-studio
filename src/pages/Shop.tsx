@@ -116,10 +116,7 @@ const Shop = () => {
                     {/* Product Info */}
                     <div className="p-6">
                       <Link to={`/products/${product.slug}`} className="block">
-                        <span className="text-primary text-xs font-medium uppercase tracking-wider">
-                          {product.category}
-                        </span>
-                        <h3 className="font-serif text-xl text-foreground mt-1 mb-2 group-hover:text-primary transition-colors">
+                        <h3 className="font-serif text-xl text-foreground mb-2 group-hover:text-primary transition-colors">
                           {product.name}
                         </h3>
                         <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
@@ -143,7 +140,7 @@ const Shop = () => {
                         onClick={() => navigate(`/checkout?product=${product.slug}&quantity=1&step=1`)}
                       >
                         <ArrowRight size={16} className="mr-2" />
-                        Choose This Portrait
+                        Choose This Package
                       </Button>
                     </div>
                   </div>

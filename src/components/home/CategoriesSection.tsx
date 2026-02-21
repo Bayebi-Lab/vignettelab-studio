@@ -42,7 +42,7 @@ export function CategoriesSection() {
             Maternity Photography Styles
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Choose the perfect style to capture your pregnancy glow. From classic to glamour, we have options for every expecting mother.
+            Every package captures your bump in 3 stunning styles, creating portraits as unique as your pregnancy journey.
           </p>
         </motion.div>
 

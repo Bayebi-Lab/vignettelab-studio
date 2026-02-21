@@ -22,7 +22,7 @@ export function CTASection() {
         >
           <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-primary-foreground/10 rounded-full">
             <Heart size={16} className="text-primary-foreground" />
-            <span className="text-primary-foreground text-sm font-medium">Start Creating Today</span>
+            <span className="text-primary-foreground text-sm font-medium">Get Started</span>
           </div>
 
           <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-primary-foreground mb-6">
@@ -31,8 +31,7 @@ export function CTASection() {
           </h2>
 
           <p className="text-primary-foreground/80 text-lg mb-10 max-w-xl mx-auto">
-            Join over 50,000 expecting mothers who've discovered the joy of beautiful, 
-            studio-quality maternity portraits without leaving home.
+            Join over 500 mothers who've discovered the joy of beautiful, studio-quality maternity portraits without leaving home.
           </p>
 
           <div className="flex justify-center">
@@ -43,15 +42,12 @@ export function CTASection() {
               asChild
             >
               <Link to="/shop">
-                Discover Your Glow
+                Start Your Portraits
                 <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
           </div>
 
-          <p className="text-primary-foreground/60 text-sm mt-8">
-            No credit card required • Free trial available
-          </p>
         </motion.div>
       </div>
     </section>

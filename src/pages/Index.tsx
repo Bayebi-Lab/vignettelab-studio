@@ -1,10 +1,11 @@
 import { Layout } from "@/components/layout/Layout";
 import { HeroSection } from "@/components/home/HeroSection";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
-import { CategoriesSection } from "@/components/home/CategoriesSection";
 import { TransformationSection } from "@/components/home/TransformationSection";
+import { PackagesSection } from "@/components/home/PackagesSection";
 import { BenefitsSection } from "@/components/home/BenefitsSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
+import { InstagramGallerySection } from "@/components/home/InstagramGallerySection";
 import { CTASection } from "@/components/home/CTASection";
 
 const Index = () => {
@@ -12,10 +13,11 @@ const Index = () => {
     <Layout>
       <HeroSection />
       <HowItWorksSection />
-      <CategoriesSection />
       <TransformationSection />
+      <PackagesSection />
       <BenefitsSection />
       <TestimonialsSection />
+      <InstagramGallerySection />
       <CTASection />
     </Layout>
   );
