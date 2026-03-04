@@ -47,6 +47,42 @@ app.get('/health', (c) => {
 });
 
 // ---------------------------------------------------------------------------
+// POST /api/verify-admin – verify admin status (uses service role, bypasses RLS)
+// ---------------------------------------------------------------------------
+
+app.post('/verify-admin', async (c) => {
+  const authHeader = c.req.header('Authorization');
+  const token = authHeader?.replace(/^Bearer\s+/i, '');
+
+  if (!token) {
+    return c.json({ error: 'Missing authorization token' }, 401);
+  }
+
+  const supabase = createServerClient();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser(token);
+
+  if (authError || !user) {
+    return c.json({ error: 'Invalid or expired token' }, 401);
+  }
+
+  const { data: adminUser } = await supabase
+    .from('admin_users')
+    .select('id, email')
+    .eq('id', user.id)
+    .single();
+
+  if (!adminUser) {
+    return c.json({ error: 'Access denied. Admin privileges required.' }, 403);
+  }
+
+  return c.json({ admin: adminUser });
+});
+
+// ---------------------------------------------------------------------------
 // GET /api/instagram-media
 // ---------------------------------------------------------------------------
 
