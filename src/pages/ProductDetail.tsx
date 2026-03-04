@@ -12,7 +12,7 @@ import {
 import { Loader2, Share2, ChevronLeft, Check, Download } from "lucide-react";
 import { useProduct } from "@/hooks/useProducts";
 import { filterPackageFeatures } from "@/lib/utils";
-import maternityImg from "@/assets/category-maternity.jpg";
+import { getPackageImage } from "@/lib/packageImages";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -70,7 +70,7 @@ const ProductDetail = () => {
 
   const images = product.images?.length > 0
     ? product.images
-    : [maternityImg];
+    : [getPackageImage(product.slug)];
   const hasSale = product.compare_at_price && product.compare_at_price > product.price;
 
   return (

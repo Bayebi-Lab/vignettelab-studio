@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
-import maternityPlaceholder from "@/assets/category-maternity.jpg";
+import reviewImage1 from "@/assets/review_image_1.png";
+import reviewImage2 from "@/assets/review_image_2.png";
+import reviewImage3 from "@/assets/review_image_3.png";
 
 const testimonials = [
   {
@@ -8,21 +10,21 @@ const testimonials = [
     weeksPregnant: 32,
     content: "I was hesitant about maternity photos, but VignetteLab captured my pregnancy glow so beautifully! The bump photos are stunning and I didn't even have to leave my house. Perfect for busy moms-to-be!",
     rating: 5,
-    image: maternityPlaceholder,
+    image: reviewImage1,
   },
   {
     firstName: "Jessica",
     weeksPregnant: 28,
     content: "I'm so glad I captured my pregnancy journey with VignetteLab. The maternity portraits are absolutely gorgeous and I love how they preserved my glow. These photos will be treasured forever!",
     rating: 5,
-    image: maternityPlaceholder,
+    image: reviewImage2,
   },
   {
     firstName: "Emily",
     weeksPregnant: 36,
     content: "As someone who's not comfortable in front of a camera, I loved how easy it was to get beautiful maternity photos from home. The AI captured my bump perfectly and the results exceeded all my expectations!",
     rating: 5,
-    image: maternityPlaceholder,
+    image: reviewImage3,
   },
 ];
 

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import maternityImg from "@/assets/category-maternity.jpg";
+import maternityImg from "@/assets/timeless_package_image.png";
 
 const categories = [
   {

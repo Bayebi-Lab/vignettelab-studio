@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
-import heroImage from "@/assets/hero-family.jpg";
+import heroImage from "@/assets/hero_v2.png";
 
 export function HeroSection() {
   return (

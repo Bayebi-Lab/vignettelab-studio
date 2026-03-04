@@ -4,7 +4,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowRight } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
-import maternityImg from "@/assets/category-maternity.jpg";
+import { getPackageImage } from "@/lib/packageImages";
 
 const Shop = () => {
   const navigate = useNavigate();
@@ -70,7 +70,7 @@ const Shop = () => {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
             {products.map((product, index) => {
-              const imageUrl = product.images?.[0] || maternityImg;
+              const imageUrl = product.images?.[0] || getPackageImage(product.slug);
               const isExternalImage = typeof imageUrl === 'string' && imageUrl.startsWith('http');
 
               return (

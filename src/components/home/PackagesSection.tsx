@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
 import { Button } from "@/components/ui/button";
-import maternityImg from "@/assets/category-maternity.jpg";
+import { getPackageImage } from "@/lib/packageImages";
 
 export function PackagesSection() {
   const { products, loading, error } = useProducts();
@@ -60,7 +60,7 @@ export function PackagesSection() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {displayProducts.map((product, index) => {
-              const imageUrl = product.images?.[0] || maternityImg;
+              const imageUrl = product.images?.[0] || getPackageImage(product.slug);
               return (
                 <motion.div
                   key={product.id}
@@ -74,7 +74,7 @@ export function PackagesSection() {
                     <Link to={`/products/${product.slug}`} className="block">
                       <div className="relative aspect-[4/5] overflow-hidden bg-muted">
                         <img
-                          src={typeof imageUrl === "string" ? imageUrl : maternityImg}
+                          src={typeof imageUrl === "string" ? imageUrl : getPackageImage(product.slug)}
                           alt={product.name}
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />
