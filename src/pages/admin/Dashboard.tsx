@@ -5,7 +5,7 @@ import { ProtectedRoute } from '@/components/admin/ProtectedRoute';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/lib/supabase';
-import { LogOut, Package, Clock, CheckCircle, AlertCircle } from 'lucide-react';
+import { LogOut, Package, Clock, CheckCircle, AlertCircle, Instagram } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -118,9 +118,15 @@ export default function AdminDashboard() {
                   </Card>
                 </div>
 
-                <div className="flex gap-4">
+                <div className="flex gap-4 flex-wrap">
                   <Button asChild size="lg">
                     <Link to="/admin/orders">View All Orders</Link>
+                  </Button>
+                  <Button asChild variant="outline" size="lg">
+                    <Link to="/admin/instagram-posts">
+                      <Instagram className="mr-2 h-4 w-4" />
+                      Manage Instagram Posts
+                    </Link>
                   </Button>
                 </div>
               </>
