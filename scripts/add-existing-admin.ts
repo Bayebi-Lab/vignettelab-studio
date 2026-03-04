@@ -3,7 +3,11 @@
  * Add an existing Supabase Auth user to admin_users table by email.
  * Use when the user can log in but gets "Access denied. Admin privileges required."
  *
- * Usage: npx tsx scripts/add-existing-admin.ts <email>
+ * Usage:
+ *   npm run add-existing-admin -- <email>
+ *
+ * For production (use production Supabase URL and secret):
+ *   VITE_SUPABASE_URL=https://xxx.supabase.co SUPABASE_SECRET_KEY=xxx npm run add-existing-admin -- your@email.com
  */
 
 import { createClient } from '@supabase/supabase-js';
@@ -15,6 +19,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 dotenv.config({ path: join(__dirname, '..', '.env.local') });
+dotenv.config({ path: join(__dirname, '..', '.env.production') });
 dotenv.config({ path: join(__dirname, '..', '.env') });
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
