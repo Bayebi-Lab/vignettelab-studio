@@ -5,7 +5,6 @@ import { TransformationSection } from "@/components/home/TransformationSection";
 import { PackagesSection } from "@/components/home/PackagesSection";
 import { BenefitsSection } from "@/components/home/BenefitsSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
-import { InstagramGallerySection } from "@/components/home/InstagramGallerySection";
 import { CTASection } from "@/components/home/CTASection";
 
 const Index = () => {
@@ -17,7 +16,6 @@ const Index = () => {
       <PackagesSection />
       <BenefitsSection />
       <TestimonialsSection />
-      <InstagramGallerySection />
       <CTASection />
     </Layout>
   );
