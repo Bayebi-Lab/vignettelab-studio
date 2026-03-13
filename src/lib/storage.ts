@@ -134,6 +134,18 @@ function extractStoragePathFromUrl(url: string, bucket: string): string | null {
 }
 
 /**
+ * Get a signed URL for an image stored in the final-images bucket.
+ * Use when serving images on the password-protected download page.
+ */
+export async function getSignedUrlForFinalImage(imageUrl: string): Promise<string> {
+  const path = extractStoragePathFromUrl(imageUrl, FINAL_IMAGES_BUCKET);
+  if (path) {
+    return getSignedUrl(path, FINAL_IMAGES_BUCKET);
+  }
+  return imageUrl;
+}
+
+/**
  * Get a signed URL for an image stored in the uploaded-images bucket (private).
  * Use this when displaying uploaded images in admin, as the bucket is private.
  * @param imageUrl - The stored URL (public URL that returns 403 for private buckets)

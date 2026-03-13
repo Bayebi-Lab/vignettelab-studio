@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import JSZip from 'jszip';
 import Stripe from 'stripe';
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
@@ -456,6 +457,240 @@ function escapeHtml(s: string): string {
     .replace(/"/g, '&quot;');
 }
 
+const FINAL_IMAGES_BUCKET = 'final-images';
+
+function extractStoragePathFromUrl(url: string, bucket: string): string | null {
+  try {
+    const publicPrefix = `/object/public/${bucket}/`;
+    const idx = url.indexOf(publicPrefix);
+    if (idx !== -1) return url.slice(idx + publicPrefix.length);
+    const signPrefix = `/object/sign/${bucket}/`;
+    const signIdx = url.indexOf(signPrefix);
+    if (signIdx !== -1) {
+      const afterPrefix = url.slice(signIdx + signPrefix.length);
+      const queryIdx = afterPrefix.indexOf('?');
+      return queryIdx !== -1 ? afterPrefix.slice(0, queryIdx) : afterPrefix;
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// POST /api/download/verify – verify password and return signed image URLs
+// ---------------------------------------------------------------------------
+
+app.post('/download/verify', async (c) => {
+  try {
+    const body = await c.req.json<{ orderId: string; password: string }>();
+    const { orderId, password } = body;
+
+    if (!orderId || !password) {
+      return c.json({ error: 'Order ID and password are required' }, 400);
+    }
+
+    const supabase = createServerClient();
+
+    const { data: order, error: orderError } = await supabase
+      .from('orders')
+      .select('id, delivery_password')
+      .eq('id', orderId)
+      .single();
+
+    if (orderError || !order) {
+      return c.json({ error: 'Order not found' }, 404);
+    }
+
+    if (!order.delivery_password || order.delivery_password !== password) {
+      return c.json({ error: 'Invalid password' }, 401);
+    }
+
+    const { data: images, error: imagesError } = await supabase
+      .from('order_images')
+      .select('id, image_url')
+      .eq('order_id', orderId)
+      .eq('type', 'final')
+      .order('created_at', { ascending: true });
+
+    if (imagesError || !images?.length) {
+      return c.json({ valid: true, images: [] });
+    }
+
+    const signedUrls = await Promise.all(
+      images.map(async (img, i) => {
+        const path = extractStoragePathFromUrl(img.image_url, FINAL_IMAGES_BUCKET);
+        if (!path) return { url: img.image_url, filename: `portrait-${i + 1}.jpg` };
+        const { data } = await supabase.storage
+          .from(FINAL_IMAGES_BUCKET)
+          .createSignedUrl(path, 60 * 60 * 24 * 7); // 7 days
+        return {
+          url: data?.signedUrl ?? img.image_url,
+          filename: `portrait-${i + 1}.jpg`,
+        };
+      })
+    );
+
+    return c.json({ valid: true, images: signedUrls });
+  } catch (error) {
+    console.error('Error verifying download access:', error);
+    return c.json(
+      { error: 'Failed to verify access', message: error instanceof Error ? error.message : 'Unknown error' },
+      500,
+    );
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /api/download/zip – verify password and return zip of all images
+// ---------------------------------------------------------------------------
+
+app.post('/download/zip', async (c) => {
+  try {
+    const body = await c.req.json<{ orderId: string; password: string }>();
+    const { orderId, password } = body;
+
+    if (!orderId || !password) {
+      return c.json({ error: 'Order ID and password are required' }, 400);
+    }
+
+    const supabase = createServerClient();
+
+    const { data: order, error: orderError } = await supabase
+      .from('orders')
+      .select('id, delivery_password')
+      .eq('id', orderId)
+      .single();
+
+    if (orderError || !order) {
+      return c.json({ error: 'Order not found' }, 404);
+    }
+
+    if (!order.delivery_password || order.delivery_password !== password) {
+      return c.json({ error: 'Invalid password' }, 401);
+    }
+
+    const { data: images, error: imagesError } = await supabase
+      .from('order_images')
+      .select('id, image_url')
+      .eq('order_id', orderId)
+      .eq('type', 'final')
+      .order('created_at', { ascending: true });
+
+    if (imagesError || !images?.length) {
+      return c.json({ error: 'No images available' }, 404);
+    }
+
+    const signedUrls = await Promise.all(
+      images.map(async (img, i) => {
+        const path = extractStoragePathFromUrl(img.image_url, FINAL_IMAGES_BUCKET);
+        if (!path) return { url: img.image_url, filename: `portrait-${i + 1}.jpg` };
+        const { data } = await supabase.storage
+          .from(FINAL_IMAGES_BUCKET)
+          .createSignedUrl(path, 60 * 60 * 24 * 7);
+        return {
+          url: data?.signedUrl ?? img.image_url,
+          filename: `portrait-${i + 1}.jpg`,
+        };
+      })
+    );
+
+    const zip = new JSZip();
+    for (const { url, filename } of signedUrls) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Failed to fetch ${filename}`);
+      const buf = await res.arrayBuffer();
+      zip.file(filename, buf);
+    }
+
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const zipFilename = `portraits-${orderId.slice(0, 8)}.zip`;
+
+    return new Response(zipBlob, {
+      headers: {
+        'Content-Type': 'application/zip',
+        'Content-Disposition': `attachment; filename="${zipFilename}"`,
+      },
+    });
+  } catch (error) {
+    console.error('Error creating download zip:', error);
+    return c.json(
+      { error: 'Failed to create zip', message: error instanceof Error ? error.message : 'Unknown error' },
+      500,
+    );
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /api/download/image – verify password and return single image for download
+// ---------------------------------------------------------------------------
+
+app.post('/download/image', async (c) => {
+  try {
+    const body = await c.req.json<{ orderId: string; password: string; index: number }>();
+    const { orderId, password, index } = body;
+
+    if (!orderId || !password || index == null) {
+      return c.json({ error: 'Order ID, password, and index are required' }, 400);
+    }
+
+    const supabase = createServerClient();
+
+    const { data: order, error: orderError } = await supabase
+      .from('orders')
+      .select('id, delivery_password')
+      .eq('id', orderId)
+      .single();
+
+    if (orderError || !order) {
+      return c.json({ error: 'Order not found' }, 404);
+    }
+
+    if (!order.delivery_password || order.delivery_password !== password) {
+      return c.json({ error: 'Invalid password' }, 401);
+    }
+
+    const { data: images, error: imagesError } = await supabase
+      .from('order_images')
+      .select('image_url')
+      .eq('order_id', orderId)
+      .eq('type', 'final')
+      .order('created_at', { ascending: true });
+
+    if (imagesError || !images?.length || index < 0 || index >= images.length) {
+      return c.json({ error: 'Image not found' }, 404);
+    }
+
+    const img = images[index];
+    const path = extractStoragePathFromUrl(img.image_url, FINAL_IMAGES_BUCKET);
+    let imageUrl = img.image_url;
+    if (path) {
+      const { data } = await supabase.storage
+        .from(FINAL_IMAGES_BUCKET)
+        .createSignedUrl(path, 60 * 60 * 24 * 7);
+      if (data?.signedUrl) imageUrl = data.signedUrl;
+    }
+
+    const res = await fetch(imageUrl);
+    if (!res.ok) throw new Error('Failed to fetch image');
+    const buf = await res.arrayBuffer();
+    const filename = `portrait-${index + 1}.jpg`;
+
+    return new Response(buf, {
+      headers: {
+        'Content-Type': res.headers.get('Content-Type') || 'image/jpeg',
+        'Content-Disposition': `attachment; filename="${filename}"`,
+      },
+    });
+  } catch (error) {
+    console.error('Error downloading image:', error);
+    return c.json(
+      { error: 'Failed to download image', message: error instanceof Error ? error.message : 'Unknown error' },
+      500,
+    );
+  }
+});
+
 // ---------------------------------------------------------------------------
 // POST /api/send-email
 // ---------------------------------------------------------------------------
@@ -472,10 +707,11 @@ app.post('/send-email', async (c) => {
     let html = '';
 
     if (template_type === 'download_ready') {
-      const { orderId, packageName, downloadLinks } = (data ?? {}) as {
+      const { orderId, packageName, downloadLink, deliveryPassword } = (data ?? {}) as {
         orderId: string;
         packageName: string;
-        downloadLinks: string[];
+        downloadLink: string;
+        deliveryPassword: string;
       };
       html = `
         <!DOCTYPE html>
@@ -490,12 +726,16 @@ app.post('/send-email', async (c) => {
               <p><strong>Package:</strong> ${packageName}</p>
             </div>
             <div style="margin: 30px 0;">
-              <a href="${downloadLinks[0]}" style="display: inline-block; background-color: #8B4513; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+              <a href="${downloadLink}" style="display: inline-block; background-color: #8B4513; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
                 Download Your Portraits
               </a>
             </div>
+            <div style="background-color: #fff8e7; padding: 16px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #8B4513;">
+              <p style="margin: 0; font-size: 14px;"><strong>Your download password:</strong> <code style="background: #f0f0f0; padding: 2px 8px; border-radius: 4px;">${escapeHtml(deliveryPassword)}</code></p>
+              <p style="margin: 8px 0 0 0; font-size: 13px; color: #666;">You'll need this password to access your portraits on the download page.</p>
+            </div>
             <p style="color: #666; font-size: 14px;">
-              <strong>Note:</strong> This download link will expire in 7 days. Please download your portraits soon.
+              <strong>Note:</strong> Download links are valid for 7 days. Please save your portraits soon.
             </p>
             <p>If you have any questions or need assistance, please don't hesitate to contact us.</p>
             <p>Best regards,<br>The VignetteLab Studio Team</p>

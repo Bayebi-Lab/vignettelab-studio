@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { ImageUploader } from '@/components/admin/ImageUploader';
 import { supabase } from '@/lib/supabase';
 import { uploadFinalImages, getSignedUrlForUploadedImage } from '@/lib/storage';
-import { ArrowLeft, Mail, ShoppingBag, Calendar, Loader2, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Mail, ShoppingBag, Calendar, Loader2, CheckCircle, Send } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -20,6 +20,7 @@ interface Order {
   package_name: string;
   price: number;
   status: 'pending' | 'processing' | 'completed' | 'cancelled';
+  delivery_password?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -40,7 +41,11 @@ export default function OrderDetail() {
   const [finalImages, setFinalImages] = useState<OrderImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
+  const [resending, setResending] = useState(false);
   const [finalImageFiles, setFinalImageFiles] = useState<File[]>([]);
+
+  const generateDeliveryPassword = () =>
+    Array.from({ length: 8 }, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random() * 32)]).join('');
 
   useEffect(() => {
     if (id) {
@@ -129,16 +134,17 @@ export default function OrderDetail() {
 
       if (insertError) throw insertError;
 
-      // Update order status to completed
+      // Generate delivery password and update order status to completed
+      const deliveryPassword = generateDeliveryPassword();
       const { error: updateError } = await supabase
         .from('orders')
-        .update({ status: 'completed' })
+        .update({ status: 'completed', delivery_password: deliveryPassword })
         .eq('id', order.id);
 
       if (updateError) throw updateError;
 
-      // Send download email to customer
-      await sendDownloadEmail(uploadResults.map((r) => r.url));
+      // Send download email with link to password-protected page
+      await sendDownloadEmail(deliveryPassword);
 
       toast.success('Final images uploaded and email sent successfully');
       setFinalImageFiles([]);
@@ -152,12 +158,13 @@ export default function OrderDetail() {
     }
   };
 
-  const sendDownloadEmail = async (downloadUrls: string[]) => {
+  const sendDownloadEmail = async (deliveryPassword: string) => {
     if (!order) return;
 
+    const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+    const downloadLink = `${baseUrl.replace(/\/$/, '')}/download/${order.id}`;
+
     try {
-      // Generate signed URLs (in production, you'd want to use signed URLs)
-      // For now, we'll use the public URLs
       const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: {
@@ -170,7 +177,8 @@ export default function OrderDetail() {
           data: {
             orderId: order.id,
             packageName: order.package_name,
-            downloadLinks: downloadUrls,
+            downloadLink,
+            deliveryPassword,
           },
         }),
       });
@@ -182,6 +190,31 @@ export default function OrderDetail() {
       console.error('Error sending email:', error);
       // Don't throw - images are uploaded, email can be sent manually
       toast.error('Images uploaded but failed to send email. Please send manually.');
+    }
+  };
+
+  const handleResendEmail = async () => {
+    if (!order || finalImages.length === 0) return;
+
+    setResending(true);
+    try {
+      let password = order.delivery_password;
+      if (!password) {
+        password = generateDeliveryPassword();
+        const { error } = await supabase
+          .from('orders')
+          .update({ delivery_password: password })
+          .eq('id', order.id);
+        if (error) throw error;
+        setOrder((prev) => (prev ? { ...prev, delivery_password: password } : null));
+      }
+      await sendDownloadEmail(password);
+      toast.success('Download email sent successfully');
+    } catch (error) {
+      console.error('Error resending email:', error);
+      toast.error('Failed to send email');
+    } finally {
+      setResending(false);
     }
   };
 
@@ -337,7 +370,24 @@ export default function OrderDetail() {
                 {finalImages.length > 0 && (
                   <Card>
                     <CardHeader>
-                      <CardTitle>Final Portraits ({finalImages.length})</CardTitle>
+                      <div className="flex items-center justify-between">
+                        <CardTitle>Final Portraits ({finalImages.length})</CardTitle>
+                        {order.status === 'completed' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleResendEmail}
+                            disabled={resending}
+                          >
+                            {resending ? (
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                              <Send className="mr-2 h-4 w-4" />
+                            )}
+                            Resend Download Email
+                          </Button>
+                        )}
+                      </div>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -387,8 +437,8 @@ export default function OrderDetail() {
                         )}
                       </Button>
                       <p className="text-xs text-muted-foreground">
-                        Upload the final processed portraits. An email with download links will be
-                        sent to the customer automatically.
+                        Upload the final processed portraits. An email with a link to the
+                        password-protected download page will be sent to the customer automatically.
                       </p>
                     </CardContent>
                   </Card>
