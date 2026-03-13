@@ -2,29 +2,31 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
 import { ArrowLeftRight } from "lucide-react";
-import beforeImg from "@/assets/hero_v2.png";
+import classicBefore from "@/assets/classic_before.JPG";
 import classicAfter from "@/assets/classic_after.png";
+import radianceGlowBefore from "@/assets/radiance_glow_before.JPG";
 import radianceGlowAfter from "@/assets/radiance_glow_after.png";
+import artisticBefore from "@/assets/artistic_before.JPG";
 import artisticAfter from "@/assets/artistic_after.png";
 
 const transformations = [
   {
     id: 1,
-    before: beforeImg,
+    before: classicBefore,
     after: classicAfter,
     category: "Classic Elegance",
     description: "One of 3 stunning styles in every package — soft, natural lighting for timeless portraits",
   },
   {
     id: 2,
-    before: beforeImg,
+    before: radianceGlowBefore,
     after: radianceGlowAfter,
     category: "Radiant Glow",
     description: "Studio-quality warmth that celebrates your pregnancy glow in every package",
   },
   {
     id: 3,
-    before: beforeImg,
+    before: artisticBefore,
     after: artisticAfter,
     category: "Artistic Portrait",
     description: "Bold, creative portraits — from Timeless Glow to Eternal Moments",

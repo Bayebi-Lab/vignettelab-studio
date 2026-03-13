@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     mode === "development" && apiPlugin(),
   ].filter(Boolean),
+  assetsInclude: ["**/*.JPG", "**/*.jpg"],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
