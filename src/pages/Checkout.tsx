@@ -316,12 +316,17 @@ export default function Checkout() {
                         <button
                           key={product.id}
                           onClick={() => handleProductSelect(product.id)}
-                          className={`p-6 rounded-lg border-2 text-left transition-all ${
+                          className={`p-6 rounded-lg border-2 text-left transition-all relative ${
                             selectedProduct.id === product.id
                               ? 'border-primary bg-primary/5'
                               : 'border-border hover:border-primary/50'
                           }`}
                         >
+                          {product.is_most_popular && (
+                            <span className="absolute top-3 right-3 px-2 py-0.5 bg-primary text-primary-foreground text-xs font-medium rounded">
+                              Most Popular
+                            </span>
+                          )}
                           <div className="flex items-start justify-between mb-4">
                             <div>
                               <h3 className="font-semibold text-lg">{product.name}</h3>

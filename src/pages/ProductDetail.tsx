@@ -72,6 +72,7 @@ const ProductDetail = () => {
     ? product.images
     : [getPackageImage(product.slug)];
   const hasSale = product.compare_at_price && product.compare_at_price > product.price;
+  const isMostPopular = product.is_most_popular;
 
   return (
     <Layout>
@@ -121,11 +122,18 @@ const ProductDetail = () => {
                   />
                 </div>
               )}
-              {hasSale && (
-                <span className="absolute top-4 left-4 px-3 py-1 bg-primary text-primary-foreground text-sm font-medium rounded">
-                  Sale
-                </span>
-              )}
+              <div className="absolute top-4 left-4 flex flex-col gap-1">
+                {isMostPopular && (
+                  <span className="px-3 py-1 bg-primary text-primary-foreground text-sm font-medium rounded w-fit">
+                    Most Popular
+                  </span>
+                )}
+                {hasSale && (
+                  <span className="px-3 py-1 bg-primary text-primary-foreground text-sm font-medium rounded w-fit">
+                    Sale
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Product Info */}

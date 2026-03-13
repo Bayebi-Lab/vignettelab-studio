@@ -12,6 +12,7 @@ export interface Product {
   features: string[];
   images: string[];
   category: string;
+  is_most_popular: boolean;
 }
 
 export function useProducts() {
@@ -49,6 +50,7 @@ export function useProducts() {
           features: Array.isArray(p.features) ? p.features : [],
           images: Array.isArray(p.images) ? p.images : [],
           category: p.category || 'maternity',
+          is_most_popular: Boolean(p.is_most_popular),
         }));
 
         setProducts(transformedProducts);
@@ -107,6 +109,7 @@ export function useProduct(slug: string | undefined) {
           features: Array.isArray(data.features) ? data.features : [],
           images: Array.isArray(data.images) ? data.images : [],
           category: data.category || 'maternity',
+          is_most_popular: Boolean(data.is_most_popular),
         });
       } catch (err) {
         console.error('Error fetching product:', err);

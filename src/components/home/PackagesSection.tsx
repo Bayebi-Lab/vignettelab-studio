@@ -85,12 +85,19 @@ export function PackagesSection() {
                             <ArrowRight size={16} />
                           </span>
                         </div>
-                        {product.compare_at_price &&
-                          product.compare_at_price > product.price && (
-                            <span className="absolute top-3 left-3 px-2 py-1 bg-primary text-primary-foreground text-xs font-medium rounded">
-                              Sale
+                        <div className="absolute top-3 left-3 flex flex-col gap-1">
+                          {product.is_most_popular && (
+                            <span className="px-2 py-1 bg-primary text-primary-foreground text-xs font-medium rounded w-fit">
+                              Most Popular
                             </span>
                           )}
+                          {product.compare_at_price &&
+                            product.compare_at_price > product.price && (
+                              <span className="px-2 py-1 bg-primary text-primary-foreground text-xs font-medium rounded w-fit">
+                                Sale
+                              </span>
+                            )}
+                        </div>
                       </div>
                     </Link>
                     <div className="p-6">
