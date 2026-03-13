@@ -61,7 +61,7 @@ export function TestimonialsSection() {
               className="bg-cream p-6 rounded-2xl flex flex-col"
             >
               {/* Final Portrait Photo - Square */}
-              <div className="aspect-square w-full rounded-xl overflow-hidden mb-5 bg-muted">
+              <div className="aspect-square w-full rounded-xl overflow-hidden mb-5 bg-muted crop-watermark">
                 <img
                   src={testimonial.image}
                   alt={`Portrait by ${testimonial.firstName}`}

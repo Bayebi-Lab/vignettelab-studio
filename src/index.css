@@ -178,4 +178,9 @@
   .shadow-elevated {
     box-shadow: var(--shadow-elevated);
   }
+
+  /* Crop bottom-right corner to hide AI watermarks (e.g. Gemini) */
+  .crop-watermark {
+    clip-path: inset(0 48px 48px 0);
+  }
 }
