@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ImageUploader } from '@/components/admin/ImageUploader';
 import { supabase } from '@/lib/supabase';
-import { uploadFinalImages } from '@/lib/storage';
+import { uploadFinalImages, getSignedUrlForUploadedImage } from '@/lib/storage';
 import { ArrowLeft, Mail, ShoppingBag, Calendar, Loader2, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
@@ -36,6 +36,7 @@ export default function OrderDetail() {
   const navigate = useNavigate();
   const [order, setOrder] = useState<Order | null>(null);
   const [uploadedImages, setUploadedImages] = useState<OrderImage[]>([]);
+  const [uploadedImageUrls, setUploadedImageUrls] = useState<Record<string, string>>({});
   const [finalImages, setFinalImages] = useState<OrderImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
@@ -81,6 +82,21 @@ export default function OrderDetail() {
 
       setUploadedImages(uploaded);
       setFinalImages(final);
+
+      // Fetch signed URLs for uploaded images (bucket is private)
+      const urlMap: Record<string, string> = {};
+      await Promise.all(
+        uploaded.map(async (img) => {
+          try {
+            const signedUrl = await getSignedUrlForUploadedImage(img.image_url);
+            urlMap[img.id] = signedUrl;
+          } catch (err) {
+            console.error('Failed to get signed URL for image:', img.id, err);
+            urlMap[img.id] = img.image_url;
+          }
+        })
+      );
+      setUploadedImageUrls(urlMap);
     } catch (error) {
       console.error('Error fetching images:', error);
     }
@@ -300,12 +316,15 @@ export default function OrderDetail() {
                         {uploadedImages.map((image) => (
                           <div
                             key={image.id}
-                            className="aspect-square rounded-lg overflow-hidden border border-border"
+                            className="aspect-square rounded-lg overflow-hidden border border-border bg-muted"
                           >
                             <img
-                              src={image.image_url}
+                              src={uploadedImageUrls[image.id] || image.image_url}
                               alt="Uploaded"
                               className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                              }}
                             />
                           </div>
                         ))}

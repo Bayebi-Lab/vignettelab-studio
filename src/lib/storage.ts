@@ -108,6 +108,46 @@ export async function getSignedUrl(
 }
 
 /**
+ * Extract storage path from a Supabase storage URL
+ * Handles both public and signed URL formats
+ */
+function extractStoragePathFromUrl(url: string, bucket: string): string | null {
+  try {
+    // Format: https://xxx.supabase.co/storage/v1/object/public/<bucket>/<path>
+    const publicPrefix = `/object/public/${bucket}/`;
+    const idx = url.indexOf(publicPrefix);
+    if (idx !== -1) {
+      return url.slice(idx + publicPrefix.length);
+    }
+    // Format: https://xxx.supabase.co/storage/v1/object/sign/<bucket>/<path>?token=...
+    const signPrefix = `/object/sign/${bucket}/`;
+    const signIdx = url.indexOf(signPrefix);
+    if (signIdx !== -1) {
+      const afterPrefix = url.slice(signIdx + signPrefix.length);
+      const queryIdx = afterPrefix.indexOf('?');
+      return queryIdx !== -1 ? afterPrefix.slice(0, queryIdx) : afterPrefix;
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+/**
+ * Get a signed URL for an image stored in the uploaded-images bucket (private).
+ * Use this when displaying uploaded images in admin, as the bucket is private.
+ * @param imageUrl - The stored URL (public URL that returns 403 for private buckets)
+ * @returns Signed URL, or original URL if not a Supabase storage URL
+ */
+export async function getSignedUrlForUploadedImage(imageUrl: string): Promise<string> {
+  const path = extractStoragePathFromUrl(imageUrl, UPLOADED_IMAGES_BUCKET);
+  if (path) {
+    return getSignedUrl(path, UPLOADED_IMAGES_BUCKET);
+  }
+  return imageUrl;
+}
+
+/**
  * Delete images from storage
  * @param paths - Array of storage paths
  * @param bucket - Bucket name
